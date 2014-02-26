@@ -1,0 +1,9 @@
+[master-webhosting]
+server.pracovniagent.cz
+
+[webhosting:children]
+master-webhosting
+
+[master:children]
+master-webhosting
+

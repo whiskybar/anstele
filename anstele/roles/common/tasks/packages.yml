@@ -1,0 +1,48 @@
+- name: remove obsolete ppas
+  shell: rm -f /etc/apt/sources.list.d/{{ item }}.list /etc/apt/sources.list.d/{{ item }}.list.save
+  with_items:
+    - jbar-comoga-oneiric
+    - nginx-development-oneiric
+    - karmic
+    - rdiff-backup
+    - uwsgi-release-oneiric
+
+- name: add third party ppas
+  apt_repository: repo='ppa:{{ item }}' update_cache=no
+  with_items:
+    - keithw/mosh
+
+- name: install useful packages
+  apt: pkg={{ item }} update_cache=yes
+  with_items:
+    - patch
+    - iotop
+    - iftop
+    - htop
+    - mytop
+    - saidar
+    - ifstat
+    - dstat
+    - unp
+    - mosh
+    - nethogs
+    - ngrep
+    - python-software-properties
+    - ca-certificates
+    - multitail
+    - whois
+    - curl
+    - lftp
+    - ipython
+    - rdiff-backup
+    - socat
+    - pv
+    - python-dev
+    - python-pip
+    - python-virtualenv
+    - git
+
+- name: remove conflicting packages
+  apt: pkg={{ item }} state=absent
+  with_items:
+    - wireless-tools
