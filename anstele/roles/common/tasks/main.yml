@@ -1,1 +1,2 @@
+- include: hostname.yml
 - include: packages.yml

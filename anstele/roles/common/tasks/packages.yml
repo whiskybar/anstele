@@ -1,11 +1,13 @@
 - name: remove obsolete ppas
-  shell: rm -f /etc/apt/sources.list.d/{{ item }}.list /etc/apt/sources.list.d/{{ item }}.list.save
-  with_items:
-    - jbar-comoga-oneiric
-    - nginx-development-oneiric
-    - karmic
-    - rdiff-backup
-    - uwsgi-release-oneiric
+  file: name=/etc/apt/sources.list.d/{{ item[0] }}.list{{ item[1] }} state=absent
+  with_nested:
+    -
+      - jbar-comoga-oneiric
+      - nginx-development-oneiric
+      - karmic
+      - rdiff-backup
+      - uwsgi-release-oneiric
+    - ['', '.save']
 
 - name: add third party ppas
   apt_repository: repo='ppa:{{ item }}' update_cache=no

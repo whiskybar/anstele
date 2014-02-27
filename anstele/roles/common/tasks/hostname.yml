@@ -1,0 +1,23 @@
+- name: purge all related entries from /etc/hosts
+  lineinfile: dest=/etc/hosts regexp={{ item }} state=absent
+  with_items:
+    - "{{ inventory_hostname }}"
+    - "{{ inventory_hostname_short }}"
+    - "{{ ansible_default_ipv4.address }}"
+    - "{{ ansible_default_ipv6.address }}"
+
+- name: add entries to /etc/hosts (ipv4)
+  lineinfile: dest=/etc/hosts line="{{ ansible_default_ipv4.address }} {{ inventory_hostname }} {{ inventory_hostname_short }}"
+
+- name: add entries to /etc/hosts (ipv6)
+  lineinfile: dest=/etc/hosts line="{{ ansible_default_ipv6.address }} {{ inventory_hostname }} {{ inventory_hostname_short }}"
+  when: ansible_default_ipv6.scope == "global"
+
+- name: set the hostname for the current session
+  command: /bin/hostname {{ inventory_hostname }}
+  when: ansible_fqdn != inventory_hostname
+
+- name: preserve the hostname
+  hostname: name={{ inventory_hostname_short }}
+  when: ansible_hostname != inventory_hostname_short
+  
