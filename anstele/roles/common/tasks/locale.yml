@@ -1,0 +1,26 @@
+- name: modify locales
+  copy: content='{{ item.content|join("\n") }}' dest=/var/lib/locales/supported.d/{{ item.name }}
+  with_items:
+    -
+      name: local
+      content:
+        - en_US.UTF-8 UTF-8
+    -
+      name: en
+      content:
+        - en_US.UTF-8 UTF-8
+        - en_GB.UTF-8 UTF-8
+    -
+      name: other
+      content:
+        - cs_CZ.UTF-8 UTF-8
+        - sk_SK.UTF-8 UTF-8
+        - de_DE.UTF-8 UTF-8
+  notify:
+    - refresh locales
+
+- name: default locale
+  copy: content='LANG="en_US.UTF-8"' dest=/etc/default/locale
+  notify:
+    - refresh locales
+  

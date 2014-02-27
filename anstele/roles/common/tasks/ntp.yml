@@ -1,0 +1,4 @@
+- name: install the ntp packages
+  apt: pkg=ntp
+  notify:
+    - synchronize time
