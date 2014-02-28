@@ -1,0 +1,11 @@
+- name: customize inputrc
+  lineinfile: dest=/etc/inputrc line="set show-all-if-ambiguous on"
+
+- name: customize nanorc
+  lineinfile: dest=/etc/nanorc line="set tabsize 4"
+
+- name: bash aliases
+  copy: src=etc/bash_aliases dest=/etc/bash_aliases
+
+- name: enable bash aliases
+  lineinfile: dest=/etc/bash.bashrc line="source /etc/bash_aliases"

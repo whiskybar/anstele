@@ -6,3 +6,6 @@
 
 - name: refresh locales
   command: /usr/sbin/locale-gen
+
+- name: reload ssh
+  command: service ssh restart
