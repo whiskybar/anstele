@@ -14,7 +14,7 @@
     shell=/bin/bash
     update_password=on_create
   with_items: users
-  when: item.get('default')
+  when: item.get('default') or admins is defined and item.username in admins
 
 - name: set the root password
   user: name=root password={{ root.password }}
@@ -27,7 +27,7 @@
     user={{ item.username }}
     key="{{ lookup('file', '/etc/ansible/authorized_keys/' + item.username + '.pub')}}"
   with_items: users
-  when: item.get('default')
+  when: item.get('default') or admins is defined and item.username in admins
 
 - name: distribute ssh keys for system users
   authorized_key:
