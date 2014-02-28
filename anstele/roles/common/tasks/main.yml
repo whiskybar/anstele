@@ -4,3 +4,5 @@
 - include: locale.yml
 - include: packages.yml
 - include: disks.yml
+- include: users.yml
+
