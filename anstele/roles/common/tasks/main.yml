@@ -1,5 +1,6 @@
 - include: hostname.yml
 - include: sudo.yml
 - include: ntp.yml
-- include: packages.yml
 - include: locale.yml
+- include: packages.yml
+- include: disks.yml

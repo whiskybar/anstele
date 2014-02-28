@@ -1,0 +1,4 @@
+- name: check for disk scanning on mount
+  shell: /sbin/tune2fs -l {{ item.device }} | grep -q 'Maximum mount count:\s*-1' || tune2fs -c 0 {{ item.device }}
+  with_items: ansible_mounts
+  when: item.fstype in ['ext3', 'ext4']
