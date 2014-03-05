@@ -1,0 +1,5 @@
+---
+- hosts: ns1.tele3.cz
+  roles:
+    - dns-sync
+

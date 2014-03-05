@@ -1,0 +1,2 @@
+- name: test the mysql plugin
+  debug: msg="The test variable {{ zones }}"
