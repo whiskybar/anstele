@@ -15,7 +15,6 @@ class VarsModule(object):
         playbook_basedir = os.path.abspath(playbook_basedir) if playbook_basedir is not None else None
         inventory_basedir = self.inventory.basedir()
         result = {}
-        print 'playbook dir', playbook_basedir, id(self.inventory)
         for basedir in filter(None, {playbook_basedir, inventory_basedir}):
             module_path = os.path.join(basedir, 'python_vars')
             sys.path.insert(0, module_path)

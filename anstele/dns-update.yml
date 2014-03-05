@@ -1,5 +1,12 @@
----
-- hosts: ns1.tele3.cz
+- hosts: data
+  vars:
+    cache_dir: /var/cache/ansible/files/{{ data.dns }}
+  roles:
+    - dns-cache
+
+- hosts: dns
+  vars:
+    cache_dir: /var/cache/ansible/files/{{ data.dns }}
   roles:
     - dns-sync
 

@@ -1,0 +1,6 @@
+- name: create a cache directory
+  file: path={{ cache_dir }}/etc/bind state=directory
+  delegate_to: 127.0.0.1
+
+- name: cache the zone files
+  synchronize: src=/etc/bind dest={{ cache_dir }}/etc mode=pull delete=yes

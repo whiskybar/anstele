@@ -13,5 +13,7 @@ def zones(host):
 
 def run(host):
     return {
-        'zones': zones(host),
+        'dns': {
+            'zones': zones(host),
+        },
     }

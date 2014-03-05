@@ -1,2 +1,8 @@
-- name: test the mysql plugin
-  debug: msg="The test variable {{ zones }}"
+- name: synchronize zone files
+  synchronize: src={{ cache_dir }}/etc/bind/hosting dest=/etc/bind delete=yes
+
+- name: refresh the zone list
+  template: src=etc/bind/named.conf.local dest=/etc/bind/named.conf.local
+
+- name: reload bind
+  command: rndc reload
