@@ -1,0 +1,3 @@
+{%- for login, password in mail.accounts.iteritems() -%}
+{{ login }}:{{ password }}::::
+{% endfor -%}

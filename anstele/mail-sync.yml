@@ -8,7 +8,7 @@
       - nospamrecipients
       - spam
   roles:
-    - mail-sync
+    - exim-sync
 
 - hosts: mailprimary
   gather_facts: no
@@ -20,7 +20,8 @@
       - copies
       - relayfromhosts
   roles:
-    - mail-sync
+    - exim-sync
+    - dovecot-sync
 
 - hosts: mailforwarder
   gather_facts: no
@@ -28,5 +29,5 @@
     filenames:
       - forwarder
   roles:
-    - mail-sync
+    - exim-sync
  
