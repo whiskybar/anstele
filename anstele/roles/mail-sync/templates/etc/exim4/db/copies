@@ -1,0 +1,3 @@
+{%- for source, destination in mail.copies.iteritems() -%}
+{{ source }}:{{ destination }}
+{% endfor -%}

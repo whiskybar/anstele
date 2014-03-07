@@ -1,0 +1,3 @@
+{%- for domain, trash in mail.trash.iteritems() -%}
+{{ domain }}:{{ trash }}
+{% endfor -%}

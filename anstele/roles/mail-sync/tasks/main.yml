@@ -1,0 +1,5 @@
+- name: update mail database
+  template: src=etc/exim4/db/{{ item }} dest=/etc/exim4/db/{{ item }}
+  with_items: filenames
+  notify:
+    - reload exim

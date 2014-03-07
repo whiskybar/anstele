@@ -1,5 +1,32 @@
 - hosts: mail
   gather_facts: no
-  tasks:
-    - name: test vars
-      debug: var=mail
+  vars:
+    filenames:
+      - recipients
+      - trash
+      - nospamhosts
+      - nospamrecipients
+      - spam
+  roles:
+    - mail-sync
+
+- hosts: mailprimary
+  gather_facts: no
+  vars:
+    filenames:
+      - accounts       
+      - aliases
+      - redirects         
+      - copies
+      - relayfromhosts
+  roles:
+    - mail-sync
+
+- hosts: mailforwarder
+  gather_facts: no
+  vars:
+    filenames:
+      - forwarder
+  roles:
+    - mail-sync
+ 

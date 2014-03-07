@@ -1,0 +1,3 @@
+{%- for source, destination in mail.aliases.iteritems() -%}
+{{ source }}:{{ destination }}
+{% endfor -%}

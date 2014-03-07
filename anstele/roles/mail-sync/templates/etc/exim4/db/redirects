@@ -1,0 +1,3 @@
+{%- for source, destination in mail.redirects.iteritems() -%}
+{{ source }}:{{ destination }}
+{% endfor -%}

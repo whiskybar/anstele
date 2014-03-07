@@ -1,0 +1,3 @@
+{%- for source, destination in mail.get('forwarder', {}).iteritems() -%}
+{{ source }}:{{ destination }}
+{% endfor -%}
