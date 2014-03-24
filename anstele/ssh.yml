@@ -1,0 +1,50 @@
+- hosts: hub
+  vars:
+    location: "{{ locations|intersect(group_names)|first }}"
+    hub: "{{ groups.get(location + '-hub', [None])|first }}"
+  tasks:
+    - name: create the backup directory
+      file: path=/var/local/backup state=directory
+
+    - name: create the root ssh key
+      command: ssh-keygen -t rsa -P '' -f /root/.ssh/id_rsa creates=/root/.ssh/id_rsa
+
+    - name: cache the root ssh key
+      fetch: src=/root/.ssh/id_rsa.pub dest=/tmp/fetched
+
+
+- hosts: backup
+  gather_facts: no
+  vars:
+    location: "{{ locations|intersect(group_names)|first }}"
+    hub: "{{ groups.get(location + '-hub', [None])|first }}"
+  tasks:
+    - name: copy the root ssh key
+      authorized_key: user=root key="{{ lookup('file', '/tmp/fetched/%s/root/.ssh/id_rsa.pub' % hub) }}"
+
+
+- hosts: all
+  gather_facts: no
+  vars:
+    location: "{{ locations|intersect(group_names)|first }}"
+    hub: "{{ groups.get(location + '-hub', [None])|first }}"
+  tasks:
+    - name: disable ssh access with passwords
+      lineinfile:
+        dest=/etc/ssh/sshd_config
+        regexp="^#?PasswordAuthentication"
+        line="PasswordAuthentication no"
+      notify:
+        - reload ssh
+
+    - name: allow ssh users
+      lineinfile:
+        dest=/etc/ssh/sshd_config
+        regexp="^#?AllowUsers"
+        line="AllowUsers {{ users|selectattr('default', 'defined')|selectattr('default')|join(' ', attribute='username') }} {{ admins|default([])|join(' ') }} hosting www-data root@{{ master.ipv4 }} root@{{ master.ipv6 }} {% if hub and 'backup' in group_names %}root@{{ hostvars[hub].ansible_default_ipv4.address }} root@{{ hostvars[hub].ansible_default_ipv6.address }}{% endif %}"
+      notify:
+        - reload ssh
+  handlers:
+    - name: reload ssh
+      command: service ssh restart
+
