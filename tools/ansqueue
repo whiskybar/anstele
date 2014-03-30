@@ -13,13 +13,13 @@ import collections
 import MySQLdb
 
 
-POLL_INTERVAL = 10
+POLL_INTERVAL = 2
 RECONNECT_INTERVAL = 60
 OPTION_FILE = '/root/.my.cnf.3307'
 DATABASE = 'hosting'
 PARALLEL_TASKS = 10
 
-Event = collections.namedtuple('Event', 'id created type host command timeout parallel')
+Event = collections.namedtuple('Event', 'id created user type host command timeout parallel')
 
 class Sql(object):
     def __init__(self, reconnect_interval=RECONNECT_INTERVAL, **connection_kwargs):
@@ -111,8 +111,22 @@ def confirm_event(thread, event, sql, running, started):
     output = thread.wait()
     sql.execute('DELETE FROM events WHERE id = %d' % event.id)
     running.task_done()
+    finished = datetime.datetime.now()
     duration = datetime.datetime.now() - started
     logging.info('%s [FINISHED]: %0.2f secs\n%s', event.id, (duration.seconds + duration.microseconds / 1000000.0), output)
+    sql.execute('INSERT event_results VALUES(%s)' % ','.join(['%s'] * 11), (
+        event.id,
+        event.created,
+        started,
+        finished,
+        event.user,
+        event.type,
+        event.host,
+        event.command,
+        event.timeout,
+        event.parallel,
+        output,
+    ))
 
 def main():
     signal.signal(signal.SIGTERM, shutdown)
