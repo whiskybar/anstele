@@ -1,0 +1,45 @@
+#!/usr/bin/python
+
+import GeoIP
+import sys
+
+ISP = {
+    'Hetzner': 'Hetzner',
+    'Casablanca': 'Casablanca',
+    'Slatina': 'Liberty Global',
+    'Coprosys': 'CoProSys',
+    'VSHosting': 'VSHosting',
+    'Coolhousing': 'COOLHOUSING',
+    'Wedos': 'WEDOS',
+    'InternetCZ': 'INTERNET CZ',
+    'Arachne': 'SPOJE.NET',
+    'SuperNetwork': 'SuperNetwork',
+    'Master': 'Master Internet',
+    'Hexageek': 'Vodafone',
+    'Sitel': '2 connect',
+    'GTS': 'GTS',
+    'MilosTuma': 'Milos Tuma',
+    'Dial': 'Dial',
+    'ProZeta': 'PRO-ZETA',
+    'Fiber': 'Fiber',
+    'Hradec': 'BEST-NET',
+    'Volny': 'Volny',
+    'FreeTel': 'FreeTel',
+}
+
+arg = sys.argv[1]
+gi = GeoIP.open('/usr/local/share/geoip/GeoIPASNum.dat', GeoIP.GEOIP_STANDARD)
+if arg.replace('.', '').isdigit():
+    org = gi.org_by_addr(arg)
+else:
+    org = gi.org_by_name(arg)
+if org:
+    for key, value in ISP.iteritems():
+        if value in org:
+            print key.lower()
+            sys.exit(0)
+if len(sys.argv) > 2 and org:
+    print org
+else:
+    print 'unknown'
+sys.exit(1)

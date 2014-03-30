@@ -47,6 +47,7 @@ class Sql(object):
 class Command(object):
     def __init__(self, command, host=None, timeout=None):
         self.args = shlex.split(command)
+        self.command = command
         self.host = host
         self.timeout = timeout
 
@@ -55,8 +56,18 @@ class Command(object):
         p.wait(self.timeout)
         return p.stdout.read() + p.stderr.read()
 
+class RemoteCommand(Command):
+    def __init__(self, command, host=None, timeout=None):
+        super(RemoteCommand, self).__init__(command, host, timeout)
+        self.args = ['ansible', self.host, '-a', self.command]
+
+command_map = {
+    'local': Command,
+    'remote': RemoteCommand,
+}
+
 def create_command(event):
-    return Command(event.command, event.host, event.timeout)
+    return command_map[event.type](event.command, event.host, event.timeout)
 
 def shutdown(signal, frame):
     sys.exit(0)
@@ -98,7 +109,7 @@ def run_events(sql, running):
 
 def confirm_event(thread, event, sql, running, started):
     output = thread.wait()
-#    sql.execute('DELETE FROM events WHERE id = %d' % event.id)
+    sql.execute('DELETE FROM events WHERE id = %d' % event.id)
     running.task_done()
     duration = datetime.datetime.now() - started
     logging.info('%s [FINISHED]: %0.2f secs\n%s', event.id, (duration.seconds + duration.microseconds / 1000000.0), output)
