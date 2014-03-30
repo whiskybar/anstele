@@ -1,0 +1,97 @@
+#!/usr/bin/python
+
+import eventlet
+eventlet.monkey_patch()
+import signal
+import logging
+import logging.handlers
+import collections
+import MySQLdb
+
+
+POLL_INTERVAL = 10
+RECONNECT_INTERVAL = 60
+OPTION_FILE = '/root/.my.cnf.3307'
+DATABASE = 'hosting'
+PARALLEL_TASKS = 10
+
+Event = collections.namedtuple('Event', 'id date type host command timeout parallel')
+
+class Sql(object):
+    def __init__(self, reconnect_interval=RECONNECT_INTERVAL, **connection_kwargs):
+        self.reconnect_interval = reconnect_interval
+        self.connection_kwargs = connection_kwargs
+        self.connect()
+        
+    def connect(self):
+        while True:
+            try:
+                self.cursor = MySQLdb.connect(**self.connection_kwargs)
+            except MySQLdb.OperationalError:
+                eventlet.sleep(self.reconnect_interval)
+
+    def execute(self, query, *args, **kwargs):
+        while True:
+            try:
+                return cursor.execute(query, *args, **kargs)
+            except MySQLdb.OperationalError:
+                self.connect()        
+
+
+def shutdown(signal, frame):
+    sys.exit(0)
+
+def configure_logging():
+    rh = logging.handlers.TimedRotatingFileHandler(
+        filename='/var/log/ansqueue.log',
+        when='midnight',
+    )
+    rh.setFormatter(logging.Formatter('%(asctime)s - %(message)s'))
+    logger = logging.getLogger('ansqueue')
+    logger.setLevel(logging.DEBUG)
+    logger.addHandler(rh)
+
+def read_events(sql, scheduled):
+    while True:
+        sql.execute('SELECT %s FROM events ORDER BY id ASC' % ','.join('`%s`' % field for field in Event._fields))
+        for event in map(Event._make, sql.cursor):
+            scheduled.put(event)
+        eventlet.sleep(POLL_INTERVAL)
+
+def schedule_events(scheduled, running):
+    parallel = true
+    while True:
+        event = scheduled.get()
+        if not parallel or not event.parallel:
+            running.join()
+        parallel = event.parallel
+        running.put(event)
+
+def run_events(sql, running):
+    while True:
+        event = running.get()
+        command = create_command(event)
+        thread = eventlet.spawn(command.run)
+        thread.link(confirm_event, event, sql)
+
+def confirm_event(event, running, cursor):
+    sql.execute('DELETE FROM events WHERE id = %d' % event.id)
+    running.task_done()
+
+def main():
+    signal.signal(signal.SIGTERM, shutdown)
+    signal.signal(signal.SIGINT, shutdown)
+
+    sql = Sql(read_default_file=OPTION_FILE, db=DATABASE)
+    scheduled_queue = eventlet.Queue
+    running_queue = eventlet.Queue(maxsize=PARALLEL_TASKS)
+
+    pool = eventlet.GreenPool()
+    pool.spawn(run_events, sql, running_queue)
+    pool.spawn(schedule_events, scheduled_queue, running_queue)
+    pool.spawn(read_events, sql, scheduled_queue)
+    pool.waitall()
+
+if __name__ == '__main__':
+    main()
+

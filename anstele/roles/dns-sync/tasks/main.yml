@@ -1,5 +1,5 @@
 - name: synchronize zone files
-  synchronize: src={{ cache_dir }}/etc/bind/hosting dest=/etc/bind delete=yes
+  synchronize: src={{ cache_dir }}/etc/bind/hosting dest=/etc/bind delete=yes rsync_timeout=300
 
 - name: refresh the zone list
   template: src=etc/bind/named.conf.local dest=/etc/bind/named.conf.local
