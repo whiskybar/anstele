@@ -2,7 +2,10 @@
 
 import eventlet
 eventlet.monkey_patch()
+from eventlet.green import subprocess
 import signal
+import datetime
+import shlex
 import logging
 import logging.handlers
 import collections
@@ -38,6 +41,18 @@ class Sql(object):
                 self.connect()        
 
 
+class Command(object):
+    def __init__(self, command, host=None, timeout=None):
+        self.event = event
+        self.args = shlex.split(command)
+        self.host = host
+        self.timeout = timeout
+
+    def run(self):
+        p = subprocess.Popen(self.args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        p.wait(self.timeout)
+        return p.stdout.read() + p.stderr.read()
+
 def shutdown(signal, frame):
     sys.exit(0)
 
@@ -56,6 +71,7 @@ def read_events(sql, scheduled):
         sql.execute('SELECT %s FROM events ORDER BY id ASC' % ','.join('`%s`' % field for field in Event._fields))
         for event in map(Event._make, sql.cursor):
             scheduled.put(event)
+            logging.debug('%s [SCHEDULED]: %s %s %s %s', event.date, event.type, event.host, event.command)
         eventlet.sleep(POLL_INTERVAL)
 
 def schedule_events(scheduled, running):
@@ -72,11 +88,14 @@ def run_events(sql, running):
         event = running.get()
         command = create_command(event)
         thread = eventlet.spawn(command.run)
-        thread.link(confirm_event, event, sql)
+        logging.info('%s [STARTING]: %s %s %s', event.id, event.type, event.host, event.command)
+        thread.link(confirm_event, event, sql, running)
 
-def confirm_event(event, running, cursor):
+def confirm_event(thread, event, sql, running):
+    output = thread.wait()
     sql.execute('DELETE FROM events WHERE id = %d' % event.id)
     running.task_done()
+    logging.info('%s [FINISHED]: %s secs\n%s', event.id, (datetime.datetime.now() - event.date).seconds, output)
 
 def main():
     signal.signal(signal.SIGTERM, shutdown)
