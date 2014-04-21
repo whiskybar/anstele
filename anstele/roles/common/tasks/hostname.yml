@@ -4,14 +4,14 @@
     - "{{ inventory_hostname }}"
     - "{{ inventory_hostname_short }}"
     - "{{ ansible_default_ipv4.address }}"
-    - "{{ ansible_default_ipv6.address }}"
+    - "{{ ansible_default_ipv6.address|default('UNDEFINED') }}"
 
 - name: add entries to /etc/hosts (ipv4)
   lineinfile: dest=/etc/hosts line="{{ ansible_default_ipv4.address }} {{ inventory_hostname }} {{ inventory_hostname_short }}"
 
 - name: add entries to /etc/hosts (ipv6)
   lineinfile: dest=/etc/hosts line="{{ ansible_default_ipv6.address }} {{ inventory_hostname }} {{ inventory_hostname_short }}"
-  when: ansible_default_ipv6.scope == "global"
+  when: ansible_default_ipv6.get('scope', 'UNDEFINED') == "global"
 
 - name: set the hostname for the current session
   command: /bin/hostname {{ inventory_hostname }}
