@@ -1,0 +1,6 @@
+- name: copy telemail requirements
+  copy: src=requirements.txt dest=/tmp/telemail.txt
+
+- name: install telemail requirements
+  sudo_user: "{{ user }}"
+  pip: requirements=/tmp/telemail.txt virtualenv={{ virtualenv }} virtualenv_site_packages=yes

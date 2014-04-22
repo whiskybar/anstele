@@ -1,0 +1,8 @@
+---
+- hosts: telemail
+  vars:
+    virtualenv: /home/hosting/telemail
+    user: hosting
+  roles:
+    - common
+    - telemail

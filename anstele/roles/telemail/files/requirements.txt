@@ -1,0 +1,3 @@
+git+https://github.com/whiskybar/telemail.git#egg=telemail
+gunicorn
+gevent
