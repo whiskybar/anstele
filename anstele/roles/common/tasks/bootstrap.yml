@@ -1,3 +1,3 @@
 - name: install ansible dependencies
-  apt: pkg=python-curl
+  apt: pkg=python-pycurl
 
