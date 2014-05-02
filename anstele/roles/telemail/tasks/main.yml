@@ -4,3 +4,33 @@
 - name: install telemail requirements
   sudo_user: "{{ user }}"
   pip: requirements=/tmp/telemail.txt virtualenv={{ virtualenv }} virtualenv_site_packages=yes
+
+- name: create directories
+  file: path={{ item }} owner={{ user }} group={{ user }} state=directory
+  with_items:
+    - /var/lib/telemail
+    - /var/www/telemail
+
+- name: create settings directory
+  file: path=/etc/telemail state=directory
+
+- name: initialize settings
+  template: src=settings.py dest=/etc/telemail
+
+- name: syncdb
+  sudo_user: "{{ user }}"
+  command: /home/hosting/telemail/bin/django-admin.py syncdb --noinput --pythonpath=/etc/telemail --settings=settings creates=/var/lib/telemail/db.sqlite3
+
+- name: collectstatic
+  sudo_user: "{{ user }}"
+  command: /home/hosting/telemail/bin/django-admin.py collectstatic -v0 --noinput --pythonpath=/etc/telemail --settings=settings creates=/var/www/telemail/static/admin/css/base.css
+
+- name: gunicorn configuration
+  copy: src=etc/gunicorn dest=/etc
+  notify:
+      - restart telemail
+
+- name: init configuration
+  copy: src=etc/init dest=/etc
+  notify:
+      - restart telemail
