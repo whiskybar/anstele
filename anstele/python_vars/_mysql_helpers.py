@@ -49,7 +49,7 @@ class Cursors(object):
         try:
             return self.cursors[database]
         except KeyError:
-            self.cursors[database] = result = MySQLdb.connect(db=database, read_default_file=self.option_file).cursor()
+            self.cursors[database] = result = MySQLdb.connect(db=database, read_default_file=self.option_file, charset='utf8').cursor()
             return result
 	
 
