@@ -1,0 +1,24 @@
+- name: install php-fpm packages
+  apt: pkg={{ item }}
+  with_items:
+    - php5-fpm
+    - php5-sqlite
+    - php5-pspell
+    - php5-mcrypt
+    - php5-imap
+    - php5-gd
+    - php5-memcached
+    - php5-cli
+    - php-xml-rss
+    - php-xml-parser
+    - php-net-smtp
+
+- name: init fpm
+  copy: src=etc/php5/fpm/php.ini dest=/etc/php5/fpm/php.ini
+  notify:
+    - reload php-fpm
+
+- name: fpm pool
+  copy: src=etc/php5/fpm/pool.d/www.conf dest=/etc/php5/fpm/pool.d/www.conf
+  notify:
+    - reload php-fpm
