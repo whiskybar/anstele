@@ -1,0 +1,14 @@
+- name: install exim packages
+  apt: pkg={{ item }}
+  with_items:
+    - exim4-daemon-heavy
+    - heirloom-mailx
+    - ssl-cert
+
+- name: adjust SSL permissions
+  user: name=Debian-exim groups=ssl-cert append=yes
+
+- name: customize exim4.conf
+  template: src=etc/exim4/exim4.conf dest=/etc/exim4/exim4.conf mode=644
+  notify:
+    - reload exim
