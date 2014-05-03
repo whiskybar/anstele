@@ -1,0 +1,28 @@
+- name: repository
+  apt_repository: repo=ppa:tuxpoldo/yeasoft-backports
+
+- name: packages
+  apt: pkg={{ item }}
+  with_items:
+    - roundcube-sqlite3
+    - roundcube
+    - roundcube-plugins
+    - memcached
+
+- name: disable apache
+  service: name=apache2 state=stopped enabled=no
+
+- name: database file
+  sudo_user: www-data
+  copy: src=var/lib/roundcube dest=/var/lib
+
+#- name: config files
+#  copy: src=etc/roundcube dest=/etc
+
+- name: plugins
+  copy: src=usr/share/roundcube/plugins dest=/usr/share/roundcube
+
+- name: symlink plugins
+  file: src=/usr/share/roundcube/plugins/{{ item|basename }} dest=/var/lib/roundcube/plugins/{{ item|basename }} state=link
+  with_dirglob:
+    - /usr/share/anstele/roles/roundcube/files/usr/share/roundcube/plugins/*

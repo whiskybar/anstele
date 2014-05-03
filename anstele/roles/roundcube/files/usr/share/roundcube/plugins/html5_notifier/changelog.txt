@@ -1,0 +1,3 @@
+0.2
+- added Listbox to select showing duration
+- added color to browser-conf-button
