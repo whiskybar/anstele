@@ -1,0 +1,27 @@
+- name: check if certificate exists
+  shell: test -f /etc/ssl/certs/{{ inventory_hostname }}.crt
+  delegate_to: 127.0.0.1
+  register: cert_exists
+  ignore_errors: True
+
+- name: find expire date
+  shell: openssl x509 -in /etc/ssl/certs/{{ inventory_hostname }}.crt -enddate -noout | cut -f2 -d= | xargs -I DATE date +%s -d "DATE"
+  delegate_to: 127.0.0.1
+  when: cert_exists|success
+  register: expire_date
+
+- name: check expire date
+  shell: exit $(( {{ expire_date.stdout }} > $(date +%s) ))
+  delegate_to: 127.0.0.1
+  when: cert_exists|success
+  register: expired
+  ignore_errors: True
+
+- name: create new certificate
+  command: "{{ item }} chdir=/etc/ssl"
+  delegate_to: 127.0.0.1
+  with_items:
+    - openssl genrsa -out private/{{ inventory_hostname }}.key 2048
+    - openssl req -new -key private/{{ inventory_hostname }}.key -config openssl.cnf -out requests/{{ inventory_hostname }}.csr -subj "/C=CZ/ST=Czech Republic/L=Prague/O=TELE3/OU=Webserver Team/CN={{ inventory_hostname }}/emailAddress=jbar@tele3.cz"
+    - openssl ca -config openssl.cnf -in requests/{{ inventory_hostname }}.csr -out certs/{{ inventory_hostname }}.crt -notext -batch
+  when: cert_exists|failed or expired|success
