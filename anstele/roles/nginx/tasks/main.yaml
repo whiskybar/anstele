@@ -1,0 +1,11 @@
+- name: nginx packages
+  apt: pkg=nginx
+
+- name: default site
+  template: src={{ item }} dest=/etc/nginx/sites-enabled/default
+  with_first_found:
+    - "../templates/etc/nginx/sites-enabled/default.{{ inventory_hostname }}"
+    - "../templates/etc/nginx/sites-enabled/default.telemail"
+  notify:
+    - reload nginx
+

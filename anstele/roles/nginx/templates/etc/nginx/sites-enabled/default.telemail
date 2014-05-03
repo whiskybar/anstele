@@ -1,0 +1,42 @@
+server {
+	listen 80;
+	server_name {{ inventory_hostname }};
+	rewrite ^ https://$host$request_uri permanent;
+}
+
+server {
+	listen 443 ssl;
+	server_name {{ inventory_hostname }};
+
+	client_max_body_size 8m;
+	ssl_certificate /etc/ssl/certs/{{ inventory_hostname }}.crt;
+	ssl_certificate_key /etc/ssl/private/{{ inventory_hostname }}.key;
+
+	index index.html index.php;
+	root /usr/share/roundcube;
+	try_files $uri $uri/;
+
+	location /static/admin {
+		root /var/www/telemail;
+	}
+
+	location /admin {
+		proxy_pass http://unix:/var/run/telemail.sock:;
+		proxy_set_header X-Real-IP $remote_addr;
+		proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+		proxy_set_header Host $host;
+	}
+
+    location ~ \.php {
+		fastcgi_pass unix:/var/run/php-fpm.sock;
+		fastcgi_index index.php;
+		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+		include /etc/nginx/fastcgi_params;
+	}
+
+	location / {
+		location ~ ^/(README|INSTALL|LICENSE|CHANGELOG|UPGRADING)$ {
+			deny all;
+		}
+	}
+}
