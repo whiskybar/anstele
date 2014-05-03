@@ -14,11 +14,6 @@
     - php-net-smtp
 
 - name: init fpm
-  copy: src=etc/php5/fpm/php.ini dest=/etc/php5/fpm/php.ini
-  notify:
-    - reload php-fpm
-
-- name: fpm pool
-  copy: src=etc/php5/fpm/pool.d/www.conf dest=/etc/php5/fpm/pool.d/www.conf
+  copy: src=etc/php5/fpm dest=/etc/php5
   notify:
     - reload php-fpm

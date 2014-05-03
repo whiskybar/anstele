@@ -16,6 +16,8 @@
 
 - name: initialize settings
   template: src=settings.py dest=/etc/telemail
+  notify:
+      - restart telemail
 
 - name: syncdb
   sudo_user: "{{ user }}"
@@ -25,12 +27,7 @@
   sudo_user: "{{ user }}"
   command: /home/hosting/telemail/bin/django-admin.py collectstatic -v0 --noinput --pythonpath=/etc/telemail --settings=settings creates=/var/www/telemail/static/admin/css/base.css
 
-- name: gunicorn configuration
-  copy: src=etc/gunicorn dest=/etc
-  notify:
-      - restart telemail
-
 - name: init configuration
-  copy: src=etc/init dest=/etc
+  copy: src=etc dest=/
   notify:
       - restart telemail
