@@ -1,0 +1,46 @@
+disable_plaintext_auth = no
+passdb {
+    driver = sql
+    args = /etc/dovecot/local-sqlite.conf
+}
+userdb {
+    driver = static
+    args = uid=hosting gid=hosting home=/var/mail/%d/%n mail=mdbox:~/mdbox
+}
+auth_mechanisms = plain login
+
+namespace inbox {
+    separator = .
+}
+mailbox_list_index = yes
+
+default_vsz_limit = 1024M
+service auth {
+    client_limit = 1000
+    unix_listener auth-exim {
+      mode = 0660
+      group = Debian-exim
+    }
+}
+service imap-login {
+    service_count = 0
+    process_min_avail = 8
+}
+service pop3-login {
+    service_count = 0
+}
+service imap {
+    process_min_avail = 8
+}
+service pop3 {
+    process_min_avail = 8
+}
+service lmtp {
+    process_min_avail = 8
+}
+
+ssl = yes
+ssl_cert = </etc/ssl/certs/{{ inventory_hostname }}.crt
+ssl_key = </etc/ssl/private/{{ inventory_hostname }}.key
+
+lda_mailbox_autocreate = yes

@@ -1,0 +1,37 @@
+- name: dovecot repository
+  apt_repository: repo="ppa:malte.swart/dovecot-2.2"
+
+- name: dovecot packages
+  apt: pkg={{ item }}
+  with_items:
+    - dovecot-imapd
+    - dovecot-pop3d
+    - dovecot-lmtpd
+    - dovecot-managesieved
+
+- name: telemail dovecot packages
+  apt: pkg=dovecot-sqlite
+  when: "'telemail' in group_names"
+
+- name: dovecot telemail config
+  copy: src=etc/dovecot/local-sqlite.conf.telemail dest=/etc/dovecot/local-sqlite.conf
+  when: "'telemail' in group_names"
+  notify:
+    - reload dovecot
+
+- name: dovecot config
+  template: src=etc/dovecot/local.conf{% if 'telemail' in group_names %}.telemail{% endif %} dest=/etc/dovecot/local.conf
+  notify:
+    - reload dovecot
+
+- name: disable system auth
+  lineinfile: dest=/etc/dovecot/conf.d/10-auth.conf line='!include auth-system.conf.ext' state=absent
+  notify:
+    - reload dovecot
+
+- name: mail directory
+  file: path=/var/mail owner=hosting group=hosting state=directory
+
+- name: expunge old messages
+  cron: name="dovecot cleanup" hour=3 minute=4 job="/usr/bin/doveadm purge -A" cron_file=dovecot-cleanup user=root
+  when: "'telemail' in group_names"

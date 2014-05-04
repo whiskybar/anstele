@@ -1,0 +1,9 @@
+#because this configuration cannot live in the main file
+
+driver = sqlite
+connect = /var/lib/telemail/db.sqlite3
+default_pass_scheme = SHA512-CRYPT
+password_query = SELECT address AS username, password \
+     FROM addresses_account \
+     WHERE address = '%u'
+

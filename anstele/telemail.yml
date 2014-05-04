@@ -12,3 +12,4 @@
     - nginx
     - exim
     - exim-spam
+    - dovecot
