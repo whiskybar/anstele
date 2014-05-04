@@ -1,0 +1,16 @@
+- name: upload private key
+  copy: src=/etc/ssl/private/{{ inventory_hostname }}.key dest=/etc/ssl/private/{{ inventory_hostname }}.key mode=0600
+
+- name: upload certificate
+  copy: src=/etc/ssl/certs/{{ inventory_hostname }}.crt dest=/etc/ssl/certs/{{ inventory_hostname }}.crt
+
+- name: pureftpd certificate
+  copy: content="{{ lookup('file', '/etc/ssl/private/' + inventory_hostname + '.key') }}\n{{ lookup('file', '/etc/ssl/certs/' + inventory_hostname + '.crt') }}" dest=/etc/ssl/private/pure-ftpd.pem mode=0600
+
+- name: reload apache
+  service: name=apache2 state=reloaded
+  ignore_errors: True
+
+- name: reload nginx
+  service: name=apache2 state=reloaded
+  ignore_errors: True

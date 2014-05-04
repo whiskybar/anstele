@@ -1,3 +1,5 @@
 - hosts: all
+  vars:
+    force: True
   roles:
     - cert

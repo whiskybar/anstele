@@ -24,4 +24,12 @@
     - openssl genrsa -out private/{{ inventory_hostname }}.key 2048
     - openssl req -new -key private/{{ inventory_hostname }}.key -config openssl.cnf -out requests/{{ inventory_hostname }}.csr -subj "/C=CZ/ST=Czech Republic/L=Prague/O=TELE3/OU=Webserver Team/CN={{ inventory_hostname }}/emailAddress=jbar@tele3.cz"
     - openssl ca -config openssl.cnf -in requests/{{ inventory_hostname }}.csr -out certs/{{ inventory_hostname }}.crt -notext -batch
-  when: cert_exists|failed or expired|success
+  when: cert_exists|failed or expired|success or force|default(False)
+  notify:
+    - upload private key
+    - upload certificate
+    - pureftpd certificate
+    - reload apache
+    - reload nginx
+
+
