@@ -1,0 +1,19 @@
+- name: spamassassin packages
+  apt: pkg=spamassassin
+
+- name: spamassassin config
+  copy: src=etc/default/spamassassin dest=/etc/default/spamassassin
+  notify:
+    - restart spamassassin
+
+- name: clamav packages
+  apt: pkg={{ item }}
+  with_items:
+    - clamav-freshclam
+    - clamav-daemon
+  notify:
+    - refresh clamav
+    - restart clamav
+
+- name: clamav groups
+  user: name=clamav groups=Debian-exim append=yes

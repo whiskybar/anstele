@@ -11,3 +11,4 @@
     - roundcube
     - nginx
     - exim
+    - exim-spam

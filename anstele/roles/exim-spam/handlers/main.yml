@@ -1,0 +1,9 @@
+- name: restart spamassassin
+  service: name=spamassassin state=restarted
+
+- name: refresh clamav
+  command: freshclam
+
+- name: restart clamav
+  service: name=clamav-daemon state=restarted
+
