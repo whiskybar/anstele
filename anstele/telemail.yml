@@ -10,3 +10,4 @@
     - php-fpm
     - roundcube
     - nginx
+    - exim
