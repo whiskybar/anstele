@@ -12,5 +12,5 @@
   ignore_errors: True
 
 - name: reload nginx
-  service: name=apache2 state=reloaded
+  service: name=nginx state=reloaded
   ignore_errors: True

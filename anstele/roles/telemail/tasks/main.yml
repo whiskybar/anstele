@@ -2,6 +2,7 @@
   copy: src=requirements.txt dest=/tmp/telemail.txt
 
 - name: install telemail requirements
+  sudo: yes
   sudo_user: "{{ user }}"
   pip: requirements=/tmp/telemail.txt virtualenv={{ virtualenv }} virtualenv_site_packages=yes
 
@@ -20,10 +21,12 @@
       - restart telemail
 
 - name: syncdb
+  sudo: yes
   sudo_user: "{{ user }}"
   command: /home/hosting/telemail/bin/django-admin.py syncdb --noinput --pythonpath=/etc/telemail --settings=settings creates=/var/lib/telemail/db.sqlite3
 
 - name: collectstatic
+  sudo: yes
   sudo_user: "{{ user }}"
   command: /home/hosting/telemail/bin/django-admin.py collectstatic -v0 --noinput --pythonpath=/etc/telemail --settings=settings creates=/var/www/telemail/static/admin/css/base.css
 
