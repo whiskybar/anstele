@@ -1,7 +1,7 @@
-- name: repository
+- name: roundcube repository
   apt_repository: repo=ppa:tuxpoldo/yeasoft-backports
 
-- name: packages
+- name: roundcube packages
   apt: pkg={{ item }}
   with_items:
     - roundcube-sqlite3
@@ -12,14 +12,14 @@
 - name: disable apache
   service: name=apache2 state=stopped enabled=no
 
-- name: database file
+- name: roundcube database file
   sudo_user: www-data
   copy: src=var/lib/roundcube dest=/var/lib
 
-#- name: config files
-#  copy: src=etc/roundcube dest=/etc
+- name: roundcube config files
+  copy: src=etc/roundcube dest=/etc owner=root group=www-data mode=0640
 
-- name: plugins
+- name: roundcube plugins
   copy: src=usr/share/roundcube/plugins dest=/usr/share/roundcube
 
 - name: symlink plugins
