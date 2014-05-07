@@ -1,0 +1,5 @@
+- hosts: all
+  vars:
+    - supported_releases: [lucid, precise, quantal, saucy, trusty]
+  roles:
+    - packages

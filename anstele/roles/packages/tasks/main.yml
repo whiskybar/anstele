@@ -1,0 +1,4 @@
+- name: update sources list
+  template: src=etc/apt/sources.list dest=/etc/apt/sources.list
+  notify:
+    - update apt

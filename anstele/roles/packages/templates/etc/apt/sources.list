@@ -1,0 +1,11 @@
+{%- if ansible_lsb.codename not in supported_releases %}
+{% set prefix = 'old-releases' %}
+{% elif 'hetzner' in group_names %}
+{% set prefix = 'de.achive' %}
+{% else %}
+{% set prefix = 'cz.archive' %}
+{% endif -%}
+deb http://{{ prefix }}.ubuntu.com/ubuntu/ {{ ansible_lsb.codename }} main restricted universe multiverse 
+deb http://{{ prefix }}.ubuntu.com/ubuntu/ {{ ansible_lsb.codename }}-security main restricted universe multiverse 
+deb http://{{ prefix }}.ubuntu.com/ubuntu/ {{ ansible_lsb.codename }}-updates main restricted universe multiverse 
+deb http://{{ prefix }}.ubuntu.com/ubuntu/ {{ ansible_lsb.codename }}-backports main restricted universe multiverse 
