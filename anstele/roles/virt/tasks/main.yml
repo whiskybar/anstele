@@ -1,0 +1,36 @@
+- name: virt packages
+  apt: pkg={{ item }}
+  with_items:
+    - virtinst
+    - virt-goodies
+    - virt-top
+    - qemu
+    - bridge-utils
+
+- name: check for bridge networking
+  command: grep -q br0 /etc/network/interfaces
+  ignore_errors: True
+  register: bridge_networking
+
+- name: set up bridge networking 1
+  command: sed -i s/{{ ansible_default_ipv4.interface }}/br0/g /etc/network/interfaces
+  when: bridge_networking|failed
+  notify:
+    - activate bridge
+
+- name: set up bridge networking 2
+  lineinfile: |
+    dest=/etc/network/interfaces insertafter='iface br0 inet static' line='  bridge_ports {{ ansible_default_ipv4.interface }}
+      bridge_stp off
+      bridge_maxwait 5'
+  when: bridge_networking|failed
+
+- name: find ethernet link
+  shell: mii-tool eth0 | cut -f3 -d' '
+  ignore_errors: True
+  register: negotiation
+  when: bridge_networking|failed
+
+- name: set up bridge networking 3
+  lineinfile: dest=/etc/network/interfaces insertafter='iface br0 inet6 static' line='  post-up mii-tool -F {{ negotiation.stdout }} {{ ansible_default_ipv4.interface }}'
+  when: bridge_networking|failed and negotiation|success

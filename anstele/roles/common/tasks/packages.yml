@@ -14,7 +14,7 @@
 
 - name: add mosh PPA
   apt_repository: repo='ppa:keithw/mosh' update_cache=no
-  when: "{{ ansible_lsb.major_release|int < 14 }}"
+  when: ansible_lsb.major_release|int < 14
 
 - name: install useful packages
   apt: pkg={{ item }} update_cache=yes
