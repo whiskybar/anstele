@@ -1,4 +1,5 @@
 - name: install the ntp packages
   apt: pkg=ntp
+  when: "'hetzner' not in group_names"
   notify:
     - synchronize time

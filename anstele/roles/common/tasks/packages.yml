@@ -1,3 +1,6 @@
+- name: update sources list
+  template: src=etc/apt/sources.list dest=/etc/apt/sources.list
+
 - name: remove obsolete ppas
   file: name=/etc/apt/sources.list.d/{{ item[0] }}.list{{ item[1] }} state=absent
   with_nested:
@@ -9,10 +12,9 @@
       - uwsgi-release-oneiric
     - ['', '.save']
 
-- name: add third party ppas
-  apt_repository: repo='ppa:{{ item }}' update_cache=no
-  with_items:
-    - keithw/mosh
+- name: add mosh PPA
+  apt_repository: repo='ppa:keithw/mosh' update_cache=no
+  when: "{{ ansible_lsb.major_release|int < 14 }}"
 
 - name: install useful packages
   apt: pkg={{ item }} update_cache=yes
