@@ -1,0 +1,20 @@
+- name: fail2ban repository
+  apt_repository: repo="ppa:thomas-creutz/webserver"
+  when: ansible_lsb.major_release|int < 14
+
+- name: fail2ban packages
+  apt: pkg={{ item }}
+  with_items:
+    - python-pyinotify
+    - fail2ban
+
+- name: fail2ban config
+  template: src=etc/fail2ban/jail.local dest=/etc/fail2ban/jail.local
+  notify:
+    - reload fail2ban
+
+- name: fail2ban filters
+  copy: src=etc/fail2ban/filter.d dest=/etc/fail2ban
+  notify:
+    - reload fail2ban
+

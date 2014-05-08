@@ -6,3 +6,6 @@
 
 - name: refresh locales
   command: /usr/sbin/locale-gen
+
+- name: reload fail2ban
+  service: name=fail2ban state=reloaded
