@@ -1,0 +1,10 @@
+- name: snmp packages
+  apt: pkg={{ item }}
+  with_items:
+    - snmp
+    - snmpd
+
+- name: snmp config
+  template: src=etc/snmp/snmpd.conf dest=/etc/snmp/snmpd.conf
+  notify:
+    - reload snmpd

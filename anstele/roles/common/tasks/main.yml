@@ -8,4 +8,5 @@
 - include: users.yml
 - include: bash.yml
 - include: fail2ban.yml
+- include: snmp.yml
 
