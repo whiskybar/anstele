@@ -1,0 +1,30 @@
+- name: install mysql packages
+  apt: pkg={{ item }} update_cache=yes
+  with_items:
+    - python-mysqldb
+    - mysql-client
+    - mysql-server
+
+- name: customize mysql config
+  copy: src={{ item }} dest=/etc/mysql/conf.d/general.cnf
+  with_first_found:
+    - etc/mysql/conf.d/general.cnf.{{ ansible_distribution_version }}
+    - etc/mysql/conf.d/general.cnf
+  notify:
+    - reload mysql
+
+- name: write back the default config - temporary
+  copy: src={{ item }} dest=/etc/mysql/my.cnf
+  with_first_found:
+    - etc/mysql/my.conf.{{ ansible_distribution_version }}
+    - etc/mysql/my.conf
+  notify:
+    - reload mysql
+
+- name: clean the default config - temporary
+  file: path=/etc/mysql/my.cnf.dpkg-dist state=absent
+  notify:
+    - reload mysql
+
+- name: install mysql utilities
+  file: 
