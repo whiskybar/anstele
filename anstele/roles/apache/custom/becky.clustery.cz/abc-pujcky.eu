@@ -1,0 +1,4 @@
+<Directory /var/www/hosting/abc-pujcky.eu>
+        php_flag register_globals Off
+        php_admin_value safe_mode Off
+</Directory>

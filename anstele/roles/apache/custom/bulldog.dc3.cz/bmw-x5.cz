@@ -1,0 +1,4 @@
+<Directory /var/www/hosting/bmw-x5.cz>
+        php_admin_value safe_mode Off   
+</Directory>
+

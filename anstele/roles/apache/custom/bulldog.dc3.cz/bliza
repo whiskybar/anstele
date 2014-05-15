@@ -1,0 +1,34 @@
+<DirectoryMatch "^/var/www/hosting/(tkz.cz|tkz.cz/katalog|blizik.cz|blizik.cz/marketa|blizik.cz/mates|blizik.cz/scena|ceve.cz|ladys-foto.cz|sdhcetoraz.cz|greenvalleyfestival.cz|musterbuch.cz|stredovek.eu/test|gabifoto.cz|vcelarstvijaros.cz|fotbalpolna.cz|bezkilnavic.cz|ds-scena.cz|ekokoba.cz)/src">
+   php_admin_flag safe_mode off
+   php_admin_value open_basedir none
+</DirectoryMatch>
+
+<DirectoryMatch "^/var/www/hosting/erbos.cz/src">
+   php_admin_flag safe_mode off
+   php_admin_value open_basedir none
+</DirectoryMatch>
+
+<DirectoryMatch "^/var/www/hosting/renovuji.cz/src">
+   php_admin_flag safe_mode off
+   php_admin_value open_basedir none
+</DirectoryMatch>
+
+<DirectoryMatch "^/var/www/hosting/veterina-brtnice.cz/src">
+   php_admin_flag safe_mode off
+   php_admin_value open_basedir none
+</DirectoryMatch>
+
+<DirectoryMatch "^/var/www/hosting/tkz.cz/www3/src">
+   php_admin_flag safe_mode off
+   php_admin_value open_basedir none
+</DirectoryMatch>
+
+<DirectoryMatch "^/var/www/hosting/autocopter.cz/src">
+   php_admin_flag safe_mode off
+   php_admin_value open_basedir none
+</DirectoryMatch>
+
+<DirectoryMatch "^/var/www/hosting/vyrobavirniku.cz/src">
+   php_admin_flag safe_mode off
+   php_admin_value open_basedir none
+</DirectoryMatch>

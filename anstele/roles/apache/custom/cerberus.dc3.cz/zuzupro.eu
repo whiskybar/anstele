@@ -1,0 +1,3 @@
+<Directory /var/www/hosting/zuzupro.eu/>
+	php_admin_flag safe_mode Off
+</Directory>

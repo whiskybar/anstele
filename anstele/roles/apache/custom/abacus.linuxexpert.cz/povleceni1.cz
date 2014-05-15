@@ -1,0 +1,4 @@
+<Directory /var/www/hosting/povleceni1.cz>
+        php_admin_value safe_mode On
+        php_admin_value register_globals Off
+</Directory>

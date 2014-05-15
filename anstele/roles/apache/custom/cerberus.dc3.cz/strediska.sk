@@ -1,0 +1,13 @@
+ProxyRequests Off
+ProxyPreserveHost On
+
+<Proxy *>
+        Order deny,allow
+        Allow from all
+</Proxy>
+
+<Directory /var/www/hosting/strediska.sk>
+        ProxyPass http://www.strediska.genezis.eu/
+        ProxyPassReverse http://www.strediska.genezis.eu/
+</Directory>
+

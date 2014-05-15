@@ -1,0 +1,5 @@
+<Directory /var/www/hosting/elegantnipradlo.cz>
+	php_admin_value display_errors On	
+#	php_admin_value safe_mode Off
+#	php_admin_value open_basedir none
+</Directory>

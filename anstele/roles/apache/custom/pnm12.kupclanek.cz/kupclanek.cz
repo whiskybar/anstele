@@ -1,0 +1,3 @@
+<Directory /var/www/hosting/kupclanek.cz>
+        php_flag register_globals Off
+</Directory>

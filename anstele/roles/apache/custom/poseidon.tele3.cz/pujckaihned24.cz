@@ -1,0 +1,3 @@
+<Directory /var/www/hosting/pujckaihned24.cz>
+	php_admin_value display_errors on
+</Directory>

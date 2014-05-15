@@ -1,0 +1,4 @@
+<Directory /var/www/hosting/acpriluky.cz/>
+  php_admin_value display_errors On
+  php_value max_execution_time 600
+</Directory>

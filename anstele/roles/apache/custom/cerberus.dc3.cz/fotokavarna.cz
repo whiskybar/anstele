@@ -1,0 +1,5 @@
+<Directory /var/www/hosting/fotokavarna.cz/>
+	php_admin_value open_basedir none
+#	php_admin_value display_errors On
+	php_admin_flag safe_mode Off
+</Directory>

@@ -1,0 +1,3 @@
+<Directory /var/www/hosting/all4life.eu>
+        php_admin_value safe_mode Off   
+</Directory>

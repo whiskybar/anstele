@@ -1,0 +1,5 @@
+<Directory /var/www/hosting/lestim.cz>
+	php_flag register_globals Off
+	php_admin_value safe_mode Off
+</Directory>
+

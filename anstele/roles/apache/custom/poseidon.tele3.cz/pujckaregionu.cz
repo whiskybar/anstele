@@ -1,0 +1,3 @@
+<Directory /var/www/hosting/pujckaregionu.cz>
+	php_admin_value display_errors on
+</Directory>

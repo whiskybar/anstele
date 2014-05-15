@@ -1,0 +1,4 @@
+<Directory /var/www/hosting/autostangl.cz/>
+	php_admin_value post_max_size 20M
+	php_admin_value upload_max_filesize 20M
+</Directory>

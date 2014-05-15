@@ -1,0 +1,4 @@
+<Directory /var/www/hosting/hyundai-santa-fe.cz>
+        php_admin_value safe_mode Off   
+</Directory>
+

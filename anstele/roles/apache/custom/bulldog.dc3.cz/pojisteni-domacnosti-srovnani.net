@@ -1,0 +1,3 @@
+<Directory /var/www/hosting/pojisteni-domacnosti-srovnani.net>
+        php_admin_value display_errors off
+</Directory>

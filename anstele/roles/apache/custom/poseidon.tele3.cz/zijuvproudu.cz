@@ -1,0 +1,5 @@
+<Directory /var/www/hosting/zijuvproudu.cz>
+	php_admin_value display_errors on
+#	php_admin_value safe_mode Off
+#	php_admin_value open_basedir none
+</Directory>

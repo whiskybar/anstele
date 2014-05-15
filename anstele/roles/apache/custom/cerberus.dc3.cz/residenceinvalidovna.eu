@@ -1,0 +1,4 @@
+<Directory /var/www/hosting/residenceinvalidovna.eu>
+        php_admin_value safe_mode Off   
+</Directory>
+

@@ -1,0 +1,3 @@
+<Directory /var/www/hosting/mojporadca.sk>
+	php_admin_value error_reporting 69
+</Directory>

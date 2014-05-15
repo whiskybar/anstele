@@ -1,0 +1,6 @@
+<Directory /var/www/hosting/fotbalpolna.cz/>
+   php_admin_flag safe_mode off
+</Directory>
+
+
+

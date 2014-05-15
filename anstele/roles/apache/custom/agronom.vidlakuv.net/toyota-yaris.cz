@@ -1,0 +1,3 @@
+<Directory /var/www/hosting/toyota-yaris.cz>
+        php_admin_value safe_mode Off   
+</Directory>

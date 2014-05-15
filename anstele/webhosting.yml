@@ -4,5 +4,6 @@
 #    - common
 #    - exim
 #    - mysql
-    - apache
+#    - apache
+    - php
 #    - rsync

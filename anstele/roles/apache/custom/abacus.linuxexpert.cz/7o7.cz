@@ -1,0 +1,5 @@
+<Directory /var/www/hosting/7o7.cz>
+        php_admin_value safe_mode Off
+		php_admin_value register_globals Off
+</Directory>
+

@@ -1,0 +1,4 @@
+<Directory /var/www/hosting/levnejshop.cz>
+        php_admin_value safe_mode Off   
+</Directory>
+

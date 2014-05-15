@@ -1,0 +1,4 @@
+<Directory /var/www/hosting/apfotostudio.cz/>
+	php_admin_flag safe_mode Off
+	php_flag register_globals Off
+</Directory>

@@ -1,0 +1,6 @@
+<Directory /var/www/hosting/klub-polna.cz>
+	Options FollowSymLinks
+	AllowOverride All
+</Directory>
+
+
