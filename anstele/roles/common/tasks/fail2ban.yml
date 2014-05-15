@@ -3,7 +3,7 @@
   when: ansible_lsb.major_release|int < 14
 
 - name: fail2ban packages
-  apt: pkg={{ item }}
+  apt: name={{ item }}
   with_items:
     - python-pyinotify
     - fail2ban

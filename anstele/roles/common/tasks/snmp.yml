@@ -1,5 +1,5 @@
 - name: snmp packages
-  apt: pkg={{ item }}
+  apt: name={{ item }}
   with_items:
     - snmp
     - snmpd

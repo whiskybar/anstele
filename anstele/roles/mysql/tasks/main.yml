@@ -1,5 +1,5 @@
 - name: install mysql packages
-  apt: pkg={{ item }} update_cache=yes
+  apt: name={{ item }} update_cache=yes
   with_items:
     - python-mysqldb
     - mysql-client

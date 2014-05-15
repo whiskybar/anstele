@@ -1,5 +1,5 @@
 - name: virt packages
-  apt: pkg={{ item }}
+  apt: name={{ item }}
   with_items:
     - virtinst
     - virt-goodies

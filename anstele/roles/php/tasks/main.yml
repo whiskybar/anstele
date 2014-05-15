@@ -1,0 +1,29 @@
+- include: php5.2.yml
+  when: php.version|default("") == "5.2"
+- include: php5.4.yml
+  when: php.version|default("") == "5.4"
+- include: php5.4.20.yml
+  when: php.version|default("") == "5.4.20"
+
+- name: PHP packages for 12.10
+  apt: name=db4.8-util
+  when: ansible_distribution_version == "12.10"
+
+- name: PHP packages
+  apt: name={{ item }}
+  with_items:
+      - libapache2-mod-php5
+      - php5-gd
+      - php5-mcrypt
+      - php5-mysql
+      - php5-xsl
+      - php5-curl
+   when: 
+
+- name: PHP non-5.2 packages
+  apt: name={{ item }}
+  with_items:
+      - php5-imap
+      - php5-xmlrpc
+  when: php.version|default("") != "5.2"
+

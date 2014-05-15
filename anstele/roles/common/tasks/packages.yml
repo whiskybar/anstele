@@ -17,7 +17,7 @@
   when: ansible_lsb.major_release|int < 14
 
 - name: install useful packages
-  apt: pkg={{ item }} update_cache=yes
+  apt: name={{ item }} update_cache=yes
   with_items:
     - patch
     - iotop
@@ -47,6 +47,6 @@
     - git
 
 - name: remove conflicting packages
-  apt: pkg={{ item }} state=absent
+  apt: name={{ item }} state=absent
   with_items:
     - wireless-tools

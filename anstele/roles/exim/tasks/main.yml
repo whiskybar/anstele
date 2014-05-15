@@ -1,5 +1,5 @@
 - name: exim packages
-  apt: pkg={{ item }}
+  apt: name={{ item }}
   with_items:
     - exim4-daemon-heavy
     - heirloom-mailx

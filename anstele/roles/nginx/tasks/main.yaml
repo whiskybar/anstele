@@ -1,5 +1,5 @@
 - name: nginx packages
-  apt: pkg=nginx
+  apt: name=nginx
 
 - name: default site
   template: src={{ item }} dest=/etc/nginx/sites-enabled/default

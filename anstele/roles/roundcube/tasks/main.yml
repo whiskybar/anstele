@@ -2,7 +2,7 @@
   apt_repository: repo=ppa:tuxpoldo/yeasoft-backports
 
 - name: roundcube packages
-  apt: pkg={{ item }}
+  apt: name={{ item }}
   with_items:
     - roundcube-sqlite3
     - roundcube

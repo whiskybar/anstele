@@ -1,5 +1,5 @@
 - name: spamassassin packages
-  apt: pkg=spamassassin
+  apt: name=spamassassin
 
 - name: spamassassin config
   copy: src=etc/default/spamassassin dest=/etc/default/spamassassin
@@ -7,7 +7,7 @@
     - restart spamassassin
 
 - name: clamav packages
-  apt: pkg={{ item }}
+  apt: name={{ item }}
   with_items:
     - clamav-freshclam
     - clamav-daemon

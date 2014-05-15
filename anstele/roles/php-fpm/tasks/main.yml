@@ -1,5 +1,5 @@
 - name: install php-fpm packages
-  apt: pkg={{ item }}
+  apt: name={{ item }}
   with_items:
     - php5-fpm
     - php5-sqlite

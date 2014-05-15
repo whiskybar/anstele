@@ -1,5 +1,5 @@
 - name: rsync packages
-  apt: pkg=rsync
+  apt: name=rsync
 
 - name: rsync config
   copy: src=etc dest=/

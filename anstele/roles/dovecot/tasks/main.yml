@@ -2,7 +2,7 @@
   apt_repository: repo="ppa:malte.swart/dovecot-2.2"
 
 - name: dovecot packages
-  apt: pkg={{ item }}
+  apt: name={{ item }}
   with_items:
     - dovecot-imapd
     - dovecot-pop3d
@@ -10,7 +10,7 @@
     - dovecot-managesieved
 
 - name: telemail dovecot packages
-  apt: pkg=dovecot-sqlite
+  apt: name=dovecot-sqlite
   when: "'telemail' in group_names"
 
 - name: dovecot telemail config
