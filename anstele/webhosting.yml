@@ -1,6 +1,8 @@
 ---
 - hosts: webhosting
   roles:
-    - common
-    - exim
-    - mysql
+#    - common
+#    - exim
+#    - mysql
+    - apache
+#    - rsync

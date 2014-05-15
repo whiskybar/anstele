@@ -1,0 +1,36 @@
+- name: apache packages
+  apt: name={{ item }}
+  with_items:
+    - apache2
+    - apache2-mpm-prefork
+    - cronolog
+    - openssl
+    - ca-certificates      
+
+- name: apache static config
+  copy: src=etc/apache2 dest=/etc
+  notify:
+    - reload apache
+
+- name: apache template config
+  template: src={{ item }} dest=/{{ item }}
+  with_items:
+    - etc/apache2/sites-available/ssl
+    - etc/apache2/mods-available/rewrite.conf
+
+- name: apache link config
+  file: src=../{{ item }} dest=/etc/apache2/{{ item|replace('available', 'enabled') }} state=link force=yes
+  with_items:
+    - mods-available/ssl.conf
+    - mods-available/ssl.load
+    - mods-available/rewrite.load
+    - sites-available/ssl
+
+- name: apache custom config
+  template: src={{ item }} dest=/etc/apache2/conf.d
+  with_fileglob:
+    - ../custom/{{ inventory_hostname }}/*
+
+- name: remove wrong apache config
+  file: path=/etc/apache2/conf.d/other-vhosts-access-log state=absent
+

@@ -1,0 +1,10 @@
+NameVirtualHost *:443
+<VirtualHost *:443>
+    RewriteEngine On
+    RewriteOptions Inherit
+
+    SSLEngine on
+    SSLCertificateFile    /etc/ssl/certs/{{ inventory_hostname }}.crt
+    SSLCertificateKeyFile /etc/ssl/private/{{ inventory_hostname }}.key
+    SetEnvIf User-Agent ".*MSIE.*" nokeepalive ssl-unclean-shutdown
+</VirtualHost>

@@ -1,0 +1,4 @@
+<Directory /var/www/hosting/topsoul.cz>
+        php_admin_value open_basedir none
+</Directory>
+
