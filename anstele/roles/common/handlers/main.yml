@@ -1,8 +1,5 @@
 - name: synchronize time
-  command: "{{ item }}"
-  with_items:
-    - /usr/sbin/ntpdate ntp.ubuntu.com
-    - /sbin/hwclock --systohc
+  command: /sbin/hwclock --systohc
 
 - name: refresh locales
   command: /usr/sbin/locale-gen
