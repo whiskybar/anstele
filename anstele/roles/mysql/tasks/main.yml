@@ -8,6 +8,7 @@
 - name: customize mysql config
   copy: src={{ item }} dest=/etc/mysql/conf.d/general.cnf
   with_first_found:
+    - etc/mysql/conf.d/general.cnf.{{ inventory_hostname }}
     - etc/mysql/conf.d/general.cnf.{{ ansible_distribution_version }}
     - etc/mysql/conf.d/general.cnf
   notify:
@@ -26,5 +27,26 @@
   notify:
     - reload mysql
 
+- name: create root user
+  mysql_user: name=root password={{ mysql.root_password }}
+
+- name: allow root to login
+  copy:
+    content: |
+      [client]
+      user=root
+      password={{ mysql.root_password }}
+    dest: /root/.mysql
+    mode: 600
+
+- name: create hosting database
+  mysql_db: name=hosting
+
+- name: create hosting user
+  mysql_user: name=hosting password={{ mysql.hosting_password }} priv=hosting.*:ALL
+
 - name: install mysql utilities
-  file: 
+  copy: src=usr/local/sbin dest=/usr/local
+
+- name: enable daily backups
+  cron: name="backup all databases" hour=0 minute=43 job=/usr/local/sbin/dumpalldb cron_file=dumpalldb
