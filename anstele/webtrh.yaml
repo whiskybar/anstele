@@ -1,0 +1,18 @@
+- hosts: webtrh
+  tasks:
+    - name: nginx repository
+      apt_repository: repo=
+
+    - name: redis repository
+      apt_repository: repo="ppa:rwky/redis"
+
+    - name: redis packages
+      apt: pkg=redis-server
+
+    - name: mariadb repository
+      apt_repository: repo="deb http://mirror.hosting90.cz/mariadb/repo/10.0/ubuntu {{ ansible_distibution_release }} main"
+
+    - name: mariadb packages
+      apt: pkg=mariadb-server
+
+php-fpm php5-cli php5-curl php5-gd php5-imap php5-mcrypt php5-mysql php5-xsl phpmyadmin

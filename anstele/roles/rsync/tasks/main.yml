@@ -1,0 +1,8 @@
+- name: rsync packages
+  apt: pkg=rsync
+
+- name: rsync config
+  copy: src=etc dest=/
+  notify:
+    - restart rsync
+  
