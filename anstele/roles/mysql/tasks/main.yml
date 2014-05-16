@@ -15,10 +15,7 @@
     - reload mysql
 
 - name: write back the default config - temporary
-  copy: src={{ item }} dest=/etc/mysql/my.cnf
-  with_first_found:
-    - etc/mysql/my.conf.{{ ansible_distribution_version }}
-    - etc/mysql/my.conf
+  copy: src=etc/mysql/my.cnf.{{ ansible_distribution_version }} dest=/etc/mysql/my.cnf
   notify:
     - reload mysql
 
@@ -36,7 +33,7 @@
       [client]
       user=root
       password={{ mysql.root_password }}
-    dest: /root/.mysql
+    dest: /root/.my.cnf
     mode: 600
 
 - name: create hosting database
@@ -49,4 +46,4 @@
   copy: src=usr/local/sbin dest=/usr/local
 
 - name: enable daily backups
-  cron: name="backup all databases" hour=0 minute=43 job=/usr/local/sbin/dumpalldb cron_file=dumpalldb
+  cron: name="backup all databases" hour=0 minute=43 job=/usr/local/sbin/dumpalldb cron_file=dumpalldb user=root

@@ -1,0 +1,26 @@
+[mysqld_safe]
+open_files_limit	= 32768
+
+[mysqld]
+bind-address		= 0.0.0.0
+open_files_limit	= 32768
+key_buffer			= 512M
+max_connections		= 600
+query_cache_limit	= 4M
+query_cache_size	= 128M
+thread_stack		= 512K
+thread_cache_size	= 32
+ft_min_word_len		= 2
+table_cache			= 8192
+tmp_table_size		= 32MB
+max_heap_table_size	= 32MB
+read_buffer_size	= 2M
+
+language	= /usr/share/mysql/english
+default-storage-engine	= myisam
+
+[isamchk]
+key_buffer_size		= 32M
+sort_buffer			= 64M
+read_buffer			= 16M
+write_buffer		= 16M
