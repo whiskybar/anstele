@@ -1,0 +1,12 @@
+- name: phpmyadmin packages
+  apt: name=phpmyadmin
+
+- name: phpmyadmin static config
+  copy: src=etc/apache2/conf.d/phpmyadmin dest=/etc/apache2/conf.d/phpmyadmin
+  notify:
+    - reload apache
+
+- name: phpadmin db config
+  template: src=etc/phpmyadmin/config-db.php dest=/etc/phpmyadmin/config-db.php
+  notify:
+    - reload apache
