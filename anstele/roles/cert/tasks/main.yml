@@ -31,5 +31,4 @@
     - pureftpd certificate
     - reload apache
     - reload nginx
-
-
+    - reload pureftpd

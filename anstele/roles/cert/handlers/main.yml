@@ -14,3 +14,7 @@
 - name: reload nginx
   service: name=nginx state=reloaded
   ignore_errors: True
+
+- name: reload pureftpd
+  service: name=pure-ftpd-mysql state=reloaded
+  ignore_errors: True

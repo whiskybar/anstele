@@ -1,10 +1,13 @@
----
 - hosts: webhosting
+  vars:
+    owner: pureftpd.owner|default('www-data')
   roles:
-#    - common
-#    - exim
-#    - mysql
-#    - apache
-#    - php
+    - common
+    - cert
+    - exim
+    - mysql
+    - apache
+    - php
     - phpmyadmin
-#    - rsync
+    - pureftpd
+    - rsync

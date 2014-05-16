@@ -1,0 +1,21 @@
+- name: pureftpd packages
+  apt: name=pure-ftpd-mysql
+
+- name: pureftpd static config
+  copy: src=etc/pure-ftpd/conf dest=/etc/pure-ftpd
+  notify:
+    - reload pureftpd
+
+- name: pureftpd db config
+  template: src=etc/pure-ftpd/db/mysql.conf dest=/etc/pure-ftpd/db/mysql.conf
+  notify:
+    - reload pureftpd
+
+- name: data directory
+  file: path=/var/www/hosting owner={{ owner }} group={{ owner }} state=directory
+
+- name: copy dump file
+  copy: src=hosting.domains.sql dest=/tmp
+
+- name: import dump file
+  mysql_db: name=hosting target=/tmp/src=hosting.domains.sql state=import
