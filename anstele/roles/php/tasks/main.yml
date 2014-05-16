@@ -27,3 +27,51 @@
       - php5-xmlrpc
   when: php.version|default("") != "5.2"
 
+- name: PHP config
+  copy: src=/etc dest=/
+  notify:
+    - reload apache
+
+- name: PHP custom config
+  template: src={{ item }} dest=/etc/apache2/conf.d
+  with_fileglob:
+    - ../custom/{{ inventory_hostname }}/*
+  notify:
+    - reload apache
+
+- name: PHP template config
+  template: src={{ item }} dest=/{{ item }}
+  with_items:
+    - etc/apache2/mods-available/rewrite.conf
+    - etc/apache2/conf.d/php
+  notify:
+    - reload apache
+
+- name: apache link config
+  file: src=../{{ item }} dest=/etc/apache2/{{ item|replace('available', 'enabled') $
+  with_items:
+    - mods-available/rewrite.conf
+    - mods-available/rewrite.load
+  notify:
+    - reload apache
+
+- name: PHP main config 
+  template: src={{ item }} dest=/etc/php5/apache2/php.ini
+  with_first_found:
+    - etc/php5/apache2/php.ini.{{ ansible_distribution_release }}
+    - etc/php5/apache2/php.ini.12.04
+  notify:
+    - reload apache
+
+- name: default site
+  copy: src=var/www/default dest=/var/www
+
+- name: PHP maintenance scripts
+  copy: src={{ item }} dest=/{{ item }} mode=755
+  with_items:
+    - usr/local/sbin/chroot-php
+    - usr/local/bin/phpmail
+
+- name: mail log
+  file: path=/var/log/phpmail.log owner=www-data group=www-data state=touch
+

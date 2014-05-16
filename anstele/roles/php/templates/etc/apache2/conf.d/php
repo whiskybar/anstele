@@ -1,0 +1,8 @@
+<Directory /var/www/hosting/{{ inventory_hostname }}/>
+  php_admin_value open_basedir none
+</Directory>
+
+<Directory /var/www/default/>
+  php_admin_value open_basedir none
+</Directory>
+

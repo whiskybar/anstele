@@ -1,0 +1,18 @@
+#!/bin/bash
+
+HOSTING_DIR=/var/www/hosting
+OLD_FILE=/var/lib/php5/chroot
+[ -f $OLD_FILE ] || touch $OLD_FILE
+ls -1 $HOSTING_DIR | diff -q $OLD_FILE - >/dev/null && exit 0
+
+ls -1 $HOSTING_DIR | while read DOMAIN; do
+	cat <<END
+
+<Directory $HOSTING_DIR/$DOMAIN>
+	php_admin_value open_basedir $HOSTING_DIR/$DOMAIN:/tmp	
+</Directory>
+END
+done >/etc/apache2/conf.d/chroot
+
+/etc/init.d/apache2 force-reload >/dev/null
+ls -1 $HOSTING_DIR >$OLD_FILE
