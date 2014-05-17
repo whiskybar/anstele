@@ -1,3 +1,0 @@
-<Directory /usr/share/phpmyadmin>
-    php_admin_value open_basedir none
-</Directory>
