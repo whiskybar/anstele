@@ -1,6 +1,6 @@
 - hosts: webhosting
   vars:
-    owner: pureftpd.owner|default('www-data')
+    owner: "{{ pureftpd_owner|default('www-data') }}"
   roles:
 #    - common
 #    - cert
@@ -8,6 +8,6 @@
 #    - mysql
 #    - apache
 #    - php
-    - phpmyadmin
-#    - pureftpd
+#    - phpmyadmin
+    - pureftpd
 #    - rsync

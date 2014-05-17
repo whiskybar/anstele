@@ -18,4 +18,4 @@
   copy: src=hosting.domains.sql dest=/tmp
 
 - name: import dump file
-  mysql_db: name=hosting target=/tmp/src=hosting.domains.sql state=import
+  mysql_db: name=hosting target=/tmp/hosting.domains.sql state=import
