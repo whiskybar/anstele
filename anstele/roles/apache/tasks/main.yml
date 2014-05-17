@@ -7,6 +7,10 @@
     - openssl
     - ca-certificates      
 
+- name: enable SSL dependency modules
+  apache2_module: name=socache_shmcb
+  when: ansible_distribution_version|version_compare('14.04', '>=')
+
 - name: apache static config
   copy: src=etc/apache2 dest=/etc
   notify:

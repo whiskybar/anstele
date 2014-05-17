@@ -5,9 +5,9 @@
 #    - common
 #    - cert
 #    - exim
-    - mysql
+#    - mysql
 #    - apache
-#    - php
+    - php
 #    - phpmyadmin
 #    - pureftpd
 #    - rsync
