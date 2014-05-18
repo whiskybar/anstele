@@ -7,28 +7,45 @@
     - openssl
     - ca-certificates      
 
-- name: enable SSL dependency modules
-  apache2_module: name=socache_shmcb
-  when: ansible_distribution_version|version_compare('14.04', '>=')
+- name: installed apache version
+  shell: "dpkg -p apache2 | sed -n 's/^Version: \\([0-9]*:\\)*\\([0-9]*\\.[0-9]*\\).*/\\2/p'"
+  register: installed_version
+
+- name: disable example sites
+  file: path=/etc/apache2/sites-enabled/{{ item }} state=absent
+  with_items:
+    - 000-default.conf
+    - default-ssl.conf
 
 - name: apache static config
   copy: src=etc/apache2 dest=/etc
   notify:
     - reload apache
 
-- name: apache template config
-  template: src={{ item }} dest=/{{ item }}
+- name: apache site config
+  template: src={{ item }} dest=/{{ item }}{% if installed_version|version_compare('2.4', '>=') %}.conf{% endif %}
   with_items:
+    - etc/apache2/sites-available/default
     - etc/apache2/sites-available/ssl
   notify:
     - reload apache
 
-- name: apache link config
-  file: src=../{{ item }} dest=/etc/apache2/{{ item|replace('available', 'enabled') }} state=link force=yes
+- name: enable apache sites
+  command: a2ensite {{ item }}
   with_items:
-    - mods-available/ssl.conf
-    - mods-available/ssl.load
-    - sites-available/ssl
+    - default
+    - ssl
+  notify:
+    - reload apache
+
+- name: enable apache ssl dependency modules
+  apache2_module: name=socache_shmcb
+  when: installed_version|version_compare('2.4', '>=')
+  notify:
+    - reload apache
+
+- name: enable apache modules
+  apache2_module: name=ssl
   notify:
     - reload apache
 

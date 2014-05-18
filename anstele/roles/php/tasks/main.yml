@@ -28,12 +28,16 @@
       - php5-xmlrpc
   when: php_version|default == '5.2'
 
+- name: installed PHP version
+  shell: "dpkg -p libapache2-mod-php5 | sed -n 's/^Version: \\([0-9]*:\\)*\\([0-9]*\\.[0-9]*\\).*/\\2/p'"
+  register: installed_version
+
 - name: PHP config
   copy: src=etc dest=/
   notify:
     - reload apache
 
-- name: PHP custom config
+- name: PHP custom configs
   template: src={{ item }} dest=/etc/apache2/conf.d
   with_fileglob:
     - ../custom/{{ inventory_hostname }}/*
@@ -56,11 +60,17 @@
   notify:
     - reload apache
 
-- name: PHP main config 
-  template: src={{ item }} dest=/etc/php5/apache2/php.ini
+- name: revert PHP main config
+  copy: src=../global/php.ini.{{ installed_version.stdout }} dest=/etc/php5/apache2/php.ini
+  notify:
+    - reload apache
+
+- name: customize PHP main config
+  template: src={{ item }} dest=/etc/php5/apache2/conf.d/php.ini
   with_first_found:
-    - ../templates/etc/php5/apache2/php.ini.{{ ansible_distribution_release }}
-    - ../templates/etc/php5/apache2/php.ini.12.04
+    - ../global/{{ inventory_hostname }}
+    - ../global/base.ini.{{ installed_version.stdout }}
+    - ../global/base.ini
   notify:
     - reload apache
 
