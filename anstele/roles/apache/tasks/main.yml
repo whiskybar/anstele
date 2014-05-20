@@ -11,22 +11,24 @@
   shell: "dpkg -p apache2 | sed -n 's/^Version: \\([0-9]*:\\)*\\([0-9]*\\.[0-9]*\\).*/\\2/p'"
   register: installed_version
 
-- name: disable example sites
-  file: path=/etc/apache2/sites-enabled/{{ item }} state=absent
-  with_items:
-    - 000-default.conf
-    - default-ssl.conf
-
-- name: apache static config
-  copy: src=etc/apache2 dest=/etc
+- name: apache port config
+  copy: src=etc/apache2/ports.conf dest=/etc/apache2
   notify:
-    - reload apache
+    - restart apache
 
-- name: apache site config
-  template: src={{ item }} dest=/{{ item }}{% if installed_version|version_compare('2.4', '>=') %}.conf{% endif %}
-  with_items:
-    - etc/apache2/sites-available/default
-    - etc/apache2/sites-available/ssl
+- name: apache static mod config
+  copy: src=etc/apache2/mods-available dest=/etc/apache2
+  notify:
+    - restart apache
+
+- include: 2.2.yml
+  when: installed_version|version_compare('2.4', '<')
+  
+- include: 2.4.yml
+  when: installed_version|version_compare('2.4', '>=')
+
+- name: enable apache modules
+  apache2_module: name=ssl
   notify:
     - reload apache
 
@@ -37,20 +39,3 @@
     - ssl
   notify:
     - reload apache
-
-- name: enable apache ssl dependency modules
-  apache2_module: name=socache_shmcb
-  when: installed_version|version_compare('2.4', '>=')
-  notify:
-    - reload apache
-
-- name: enable apache modules
-  apache2_module: name=ssl
-  notify:
-    - reload apache
-
-- name: remove wrong apache config
-  file: path=/etc/apache2/conf.d/other-vhosts-access-log state=absent
-  notify:
-    - reload apache
-

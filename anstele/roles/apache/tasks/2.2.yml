@@ -1,0 +1,16 @@
+- name: remove example configs
+  file: path={{ item }} state=absent
+  with_items:
+    - /etc/apache2/sites-enabled/000-default
+    - /etc/apache2/conf.d/other-vhosts-access-log
+
+- name: apache custom config
+  copy: src=etc/apache2/conf.d dest=/etc/apache2
+  notify:
+    - restart apache
+
+- name: apache site config
+  template: src={{ item }} dest=/{{ item }}
+  with_items:
+    - etc/apache2/sites-available/default
+    - etc/apache2/sites-available/ssl
