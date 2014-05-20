@@ -1,0 +1,7 @@
+- hosts: ftp
+  vars:
+    owner: "{{ pureftpd_owner|default('www-data') }}"
+  roles:
+    - common
+    - exim
+    - pureftpd-standalone

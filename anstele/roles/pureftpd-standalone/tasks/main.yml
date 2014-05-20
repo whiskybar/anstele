@@ -1,0 +1,20 @@
+- name: pureftpd packages
+  apt: name=pure-ftpd
+
+- name: pureftpd static config
+  copy: src=etc/pure-ftpd/conf dest=/etc/pure-ftpd
+  notify:
+    - reload pureftpd
+
+- name: find owner UID
+  command: id -u {{ owner }}
+  register: owner_uid
+
+- name: pureftpd accounts
+  template: src=etc/pure-ftpd/pureftpd.passwd dest=/etc/pure-ftpd/pureftpd.passwd
+  notify:
+    - refresh pureftpd database
+
+- name: data directory
+  file: path=/var/www/hosting owner={{ owner }} group={{ owner }} state=directory
+

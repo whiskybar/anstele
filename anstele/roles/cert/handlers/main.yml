@@ -15,6 +15,10 @@
   service: name=nginx state=reloaded
   ignore_errors: True
 
-- name: reload pureftpd
+- name: reload pureftpd-mysql
   service: name=pure-ftpd-mysql state=reloaded
+  ignore_errors: True
+
+- name: reload pureftpd
+  service: name=pure-ftpd state=reloaded
   ignore_errors: True

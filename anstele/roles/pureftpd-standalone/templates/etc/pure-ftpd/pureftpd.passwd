@@ -1,0 +1,3 @@
+{%- for account in ftp.accounts -%}
+{{ account.username }}:{{ account.password }}:{{ owner_uid.stdout }}:{{ owner_uid.stdout }}::{{ account.homedir }}:::::::{{ account.quota }}:::::
+{% endfor -%}
