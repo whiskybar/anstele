@@ -2,10 +2,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>    
-  <title>Doména <?echo str_replace("www.", "", $_SERVER['SERVER_NAME']);?> je úspěšně zaregistrována</title>
+  <title>Doména <?php echo str_replace("www.", "", $_SERVER['SERVER_NAME']);?> je úspěšně zaregistrována</title>
   <meta http-equiv="Content-Language" content="cs" />
   <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
-  <meta name="description" content="Doména <?echo str_replace("www.", "", $_SERVER['SERVER_NAME']);?> je úspěšně zaregistrována" />
+  <meta name="description" content="Doména <?php echo str_replace("www.", "", $_SERVER['SERVER_NAME']);?> je úspěšně zaregistrována" />
   <meta name="keywords" content="registrace domén, webhosting, whois, tvorba www stránek" />
   <meta name="Language" content="Czech" />
   <meta name="robots" content="index,follow" />
@@ -21,7 +21,7 @@
 <div id="background">
         
         <div id="nadhlavicka">
-          <div id="top_domena"><h1>Doména <?echo str_replace("www.", "", $_SERVER['SERVER_NAME']);?></h1></div>
+          <div id="top_domena"><h1>Doména <?php echo str_replace("www.", "", $_SERVER['SERVER_NAME']);?></h1></div>
         </div><!-- end nadhlavicka --> 
         
         <div id="hlavicka">

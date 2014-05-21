@@ -7,7 +7,7 @@
 #    - exim
 #    - mysql
 #    - apache
-    - php
+#    - php
 #    - phpmyadmin
-#    - pureftpd
-#    - rsync
+    - pureftpd
+    - rsync
