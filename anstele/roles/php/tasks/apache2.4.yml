@@ -1,0 +1,13 @@
+- name: PHP custom configs
+  template: src={{ item }} dest=/etc/apache2/conf-enabled/{{ item|basename }}.conf
+  with_fileglob:
+    - ../custom/{{ inventory_hostname }}/*
+  notify:
+    - restart apache
+
+- name: apache custom config
+  template: src={{ item }} dest=/etc/apache2/conf-enabled/{{ item|basename }}.conf
+  with_fileglob:
+    - ../templates/etc/apache2/conf.d/*
+  notify:
+    - restart apache

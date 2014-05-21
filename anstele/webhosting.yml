@@ -6,8 +6,8 @@
 #    - cert
 #    - exim
 #    - mysql
-    - apache
-#    - php
+#    - apache
+    - php
 #    - phpmyadmin
 #    - pureftpd
 #    - rsync

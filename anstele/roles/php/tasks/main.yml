@@ -28,40 +28,45 @@
       - php5-xmlrpc
   when: php_version|default == '5.2'
 
+- name: installed apache version
+  shell: "dpkg -p apache2 | sed -n 's/^Version: \\([0-9]*:\\)*\\([0-9]*\\.[0-9]*\\).*/\\2/p'"
+  register: apache_installed_version
+
 - name: installed PHP version
   shell: "dpkg -p libapache2-mod-php5 | sed -n 's/^Version: \\([0-9]*:\\)*\\([0-9]*\\.[0-9]*\\).*/\\2/p'"
-  register: installed_version
+  register: php_installed_version
 
 - name: PHP config
   copy: src=etc dest=/
   notify:
     - reload apache
 
-- name: PHP custom configs
-  template: src={{ item }} dest=/etc/apache2/conf.d
+- include: apache2.2.yml
+  when: apache_installed_version|version_compare('2.4', '<')
+
+- include: apache2.4.yml
+  when: apache_installed_version|version_compare('2.4', '>=')
+
+- name: PHP custom configs for Apache 2.4
+  template: src={{ item }} dest=/etc/apache2/conf-enabled/{{ item|basename }}.conf
   with_fileglob:
     - ../custom/{{ inventory_hostname }}/*
+  when: apache_installed_version|version_compare('2.4', '>=')
   notify:
-    - reload apache
+    - restart apache
 
-- name: PHP template config
+- name: apache module config
   template: src={{ item }} dest=/{{ item }}
   with_items:
     - etc/apache2/mods-available/rewrite.conf
-    - etc/apache2/conf.d/php
-  notify:
-    - reload apache
 
-- name: apache link config
-  file: src=../{{ item }} dest=/etc/apache2/{{ item|replace('available', 'enabled') }} state=link force=yes
-  with_items:
-    - mods-available/rewrite.conf
-    - mods-available/rewrite.load
+- name: enable apache modules
+  apache2_module: name=rewrite
   notify:
-    - reload apache
+    - restart apache
 
 - name: revert PHP main config
-  copy: src=../global/php.ini.{{ installed_version.stdout }} dest=/etc/php5/apache2/php.ini
+  copy: src=../global/php.ini.{{ php_installed_version.stdout }} dest=/etc/php5/apache2/php.ini
   notify:
     - reload apache
 
@@ -69,7 +74,7 @@
   template: src={{ item }} dest=/etc/php5/apache2/conf.d/php.ini
   with_first_found:
     - ../global/{{ inventory_hostname }}
-    - ../global/base.ini.{{ installed_version.stdout }}
+    - ../global/base.ini.{{ php_installed_version.stdout }}
     - ../global/base.ini
   notify:
     - reload apache
