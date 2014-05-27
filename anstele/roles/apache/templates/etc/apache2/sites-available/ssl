@@ -6,5 +6,6 @@ NameVirtualHost *:443
     SSLEngine on
     SSLCertificateFile    /etc/ssl/certs/{{ inventory_hostname }}.crt
     SSLCertificateKeyFile /etc/ssl/private/{{ inventory_hostname }}.key
-    SetEnvIf User-Agent ".*MSIE.*" nokeepalive ssl-unclean-shutdown
+    SetEnvIf User-Agent ".*MSIE [2-6].*" nokeepalive ssl-unclean-shutdown downgrade-1.0 force-response-1.0
+    SetEnvIf User-Agent ".*MSIE [17-9].*" ssl-unclean-shutdown
 </VirtualHost>

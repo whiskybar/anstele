@@ -2,12 +2,12 @@
   vars:
     owner: "{{ pureftpd_owner|default('www-data') }}"
   roles:
-#    - common
-#    - cert
-#    - exim
-#    - mysql
-#    - apache
-#    - php
-#    - phpmyadmin
+    - common
+    - cert
+    - exim
+    - mysql
+    - apache
+    - php
+    - phpmyadmin
     - pureftpd
     - rsync
