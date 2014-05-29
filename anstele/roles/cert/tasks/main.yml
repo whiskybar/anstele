@@ -33,3 +33,6 @@
     - reload nginx
     - reload pureftpd-mysql
     - reload pureftpd
+
+- name: access the key directory
+  file: path=/etc/ssl/private state=directory mode=755

@@ -13,8 +13,7 @@
   service: name=apache2 state=stopped enabled=no
 
 - name: roundcube database file
-  sudo_user: www-data
-  copy: src=var/lib/roundcube dest=/var/lib
+  copy: src=var/lib/roundcube dest=/var/lib owner=www-data group=www-data
 
 - name: roundcube config files
   copy: src=etc/roundcube dest=/etc owner=root group=www-data mode=0640
