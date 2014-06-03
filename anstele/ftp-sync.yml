@@ -1,9 +1,6 @@
 - hosts: ftp
+  gather_facts: no
   vars:
     owner: "{{ pureftpd_owner|default('www-data') }}"
   roles:
-    - common
-    - cert
-    - exim
-    - pureftpd-standalone
     - pureftpd-sync

@@ -11,10 +11,6 @@
   notify:
     - reload pureftpd
 
-- name: find owner UID
-  command: id -u {{ owner }}
-  register: owner_uid
-
 - name: pureftpd accounts
   template: src=etc/pure-ftpd/pureftpd.passwd dest=/etc/pure-ftpd/pureftpd.passwd
   notify:
