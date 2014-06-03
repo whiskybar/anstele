@@ -6,6 +6,11 @@
   notify:
     - reload pureftpd
 
+- name: pureftpd authentication
+  file: src=../conf/PureDB dest=/etc/pure-ftpd/auth/50pure state=link
+  notify:
+    - reload pureftpd
+
 - name: find owner UID
   command: id -u {{ owner }}
   register: owner_uid

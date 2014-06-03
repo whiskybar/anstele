@@ -3,5 +3,6 @@
     owner: "{{ pureftpd_owner|default('www-data') }}"
   roles:
     - common
+    - cert
     - exim
     - pureftpd-standalone

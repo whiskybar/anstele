@@ -9,13 +9,13 @@ FTP = namedtuple('FTP', ['username', 'password', 'homedir', 'quota'])
 def accounts(host):
     return '''
         SELECT 
-            userid, 
-            ENCRYPT(passwd, CONCAT("$6$", SUBSTRING(SHA(RAND()), -16))), 
+            login,
+            ENCRYPT(pass, CONCAT("$6$", SUBSTRING(SHA(RAND()), -16))), 
             homedir, 
             quota * 1024 * 1024 
-        FROM domains
+        FROM ftphosting
         WHERE server = "%s"
-        ORDER BY userid
+        ORDER BY login
     ''' % host.name.split('.', 1)[0]
 
 def run(host):

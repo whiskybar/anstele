@@ -27,6 +27,7 @@
   when: cert_exists|failed or expired|success or force|default(False)
   notify:
     - upload private key
+    - access the private key
     - upload certificate
     - pureftpd certificate
     - reload apache

@@ -1,6 +1,9 @@
 - name: upload private key
   copy: src=/etc/ssl/private/{{ inventory_hostname }}.key dest=/etc/ssl/private/{{ inventory_hostname }}.key mode=0600
 
+- name: access the private key
+  file: path=/etc/ssl/private/{{ inventory_hostname }}.key mode=644
+
 - name: upload certificate
   copy: src=/etc/ssl/certs/{{ inventory_hostname }}.crt dest=/etc/ssl/certs/{{ inventory_hostname }}.crt
 
@@ -16,9 +19,9 @@
   ignore_errors: True
 
 - name: reload pureftpd-mysql
-  service: name=pure-ftpd-mysql state=reloaded
+  service: name=pure-ftpd-mysql state=restarted
   ignore_errors: True
 
 - name: reload pureftpd
-  service: name=pure-ftpd state=reloaded
+  service: name=pure-ftpd state=restarted
   ignore_errors: True
