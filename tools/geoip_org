@@ -25,6 +25,7 @@ ISP = {
     'Hradec': 'BEST-NET',
     'Volny': 'Volny',
     'FreeTel': 'FreeTel',
+    'Miami': 'Axis',
 }
 
 arg = sys.argv[1]

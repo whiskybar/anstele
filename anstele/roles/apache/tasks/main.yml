@@ -22,10 +22,10 @@
     - restart apache
 
 - include: 2.2.yml
-  when: installed_version|version_compare('2.4', '<')
+  when: installed_version.stdout|version_compare('2.4', '<')
   
 - include: 2.4.yml
-  when: installed_version|version_compare('2.4', '>=')
+  when: installed_version.stdout|version_compare('2.4', '>=')
 
 - name: enable apache modules
   apache2_module: name=ssl

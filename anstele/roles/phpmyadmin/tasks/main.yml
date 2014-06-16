@@ -6,7 +6,7 @@
   register: apache_installed_version
 
 - name: phpmyadmin static config
-  copy: src=etc/apache2/conf.d/phpmyadmin dest=/etc/apache2/{% if apache_installed_version|version_compare('2.4', '<') %}conf.d/phpmyadmin{% else %}conf-enabled/phpmyadmin.conf{% endif %}
+  copy: src=etc/apache2/conf.d/phpmyadmin dest=/etc/apache2/{% if apache_installed_version.stdout|version_compare('2.4', '<') %}conf.d/phpmyadmin{% else %}conf-enabled/phpmyadmin.conf{% endif %}
   notify:
     - reload apache
 

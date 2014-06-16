@@ -42,16 +42,16 @@
     - reload apache
 
 - include: apache2.2.yml
-  when: apache_installed_version|version_compare('2.4', '<')
+  when: apache_installed_version.stdout|version_compare('2.4', '<')
 
 - include: apache2.4.yml
-  when: apache_installed_version|version_compare('2.4', '>=')
+  when: apache_installed_version.stdout|version_compare('2.4', '>=')
 
 - name: PHP custom configs for Apache 2.4
   template: src={{ item }} dest=/etc/apache2/conf-enabled/{{ item|basename }}.conf
   with_fileglob:
     - ../custom/{{ inventory_hostname }}/*
-  when: apache_installed_version|version_compare('2.4', '>=')
+  when: apache_installed_version.stdout|version_compare('2.4', '>=')
   notify:
     - restart apache
 
@@ -65,10 +65,10 @@
   notify:
     - restart apache
 
-- name: revert PHP main config
-  copy: src=../global/php.ini.{{ php_installed_version.stdout }} dest=/etc/php5/apache2/php.ini
-  notify:
-    - reload apache
+#- name: revert PHP main config
+#  copy: src=../global/php.ini.{{ php_installed_version.stdout }} dest=/etc/php5/apache2/php.ini
+#  notify:
+#    - reload apache
 
 - name: customize PHP main config
   template: src={{ item }} dest=/etc/php5/apache2/conf.d/php.ini
