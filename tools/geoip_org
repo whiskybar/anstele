@@ -7,7 +7,7 @@ ISP = {
     'Hetzner': 'Hetzner',
     'Casablanca': 'Casablanca',
     'Slatina': 'Liberty Global',
-    'Coprosys': 'CoProSys',
+    'Chrudim': 'CoProSys',
     'VSHosting': 'VSHosting',
     'Coolhousing': 'COOLHOUSING',
     'Wedos': 'WEDOS',
@@ -34,13 +34,14 @@ if arg.replace('.', '').isdigit():
     org = gi.org_by_addr(arg)
 else:
     org = gi.org_by_name(arg)
+if len(sys.argv) > 2:
+    if org:
+        print org
+    else:
+        print 'unknown'
 if org:
     for key, value in ISP.iteritems():
         if value in org:
             print key.lower()
             sys.exit(0)
-if len(sys.argv) > 2 and org:
-    print org
-else:
-    print 'unknown'
 sys.exit(1)

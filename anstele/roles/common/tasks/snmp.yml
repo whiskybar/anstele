@@ -7,4 +7,4 @@
 - name: snmp config
   template: src=etc/snmp/snmpd.conf dest=/etc/snmp/snmpd.conf
   notify:
-    - reload snmpd
+    - restart snmpd
