@@ -3,6 +3,8 @@
   with_items:
     - snmp
     - snmpd
+  notify:
+    - register snmp
 
 - name: snmp config
   template: src=etc/snmp/snmpd.conf dest=/etc/snmp/snmpd.conf

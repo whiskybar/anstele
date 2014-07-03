@@ -1,3 +1,6 @@
+- name: phpadmin db config
+  template: src=etc/phpmyadmin/config-db.php dest=/etc/phpmyadmin/config-db.php
+
 - name: phpmyadmin packages
   apt: name=phpmyadmin
 
