@@ -3,10 +3,12 @@
   with_items:
     - snmp
     - snmpd
-  notify:
-    - register snmp
 
 - name: snmp config
   template: src=etc/snmp/snmpd.conf dest=/etc/snmp/snmpd.conf
   notify:
     - restart snmpd
+
+- name: register snmpd
+  delegate_to: "{{ master.mrtg }}"
+  command: /etc/mrtg/acrnew.sh  {{ inventory_hostname.replace('.', '') }}  {{ inventory_hostname }} 

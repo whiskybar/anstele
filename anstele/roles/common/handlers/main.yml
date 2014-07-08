@@ -10,7 +10,4 @@
 - name: restart snmpd
   service: name=snmpd state=restarted
 
-- name: register snmpd
-  delegate_to: "{{ master.mrtg }}"
-  command: /etc/mrtg/acrnew.sh {{ inventory_hostname }}
 
