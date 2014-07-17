@@ -1,6 +1,7 @@
 {% set mail_domain = inventory_hostname.split('.')[-2:]|join('.') %}
 primary_hostname = {{ inventory_hostname }}
 qualify_domain = {{ mail_domain }}
+{% if not ansible_default_ipv6 %}disable_ipv6 = true{% endif %}
 
 headers_charset = UTF-8
 host_lookup = *

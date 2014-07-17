@@ -22,6 +22,8 @@ primary_hostname = {{ inventory_hostname }}
 {% set default_domain = '.'.join(inventory_hostname.rsplit('.', 2)[-2:]) %}
 qualify_domain = {{ smtp_domain|default(default_domain) }}
 
+{% if not ansible_default_ipv6 %}disable_ipv6 = true{% endif %}
+
 acl_not_smtp = acl_check_not_smtp
 acl_smtp_rcpt = acl_check_rcpt
 acl_smtp_data = acl_check_data
