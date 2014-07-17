@@ -17,5 +17,5 @@
     - refresh pureftpd database
 
 - name: data directory
-  file: path=/var/www/hosting owner={{ owner }} group={{ owner }} state=directory
+  file: path=/var/www/hosting owner={{ owner }} group={{ owner }} mode=775 state=directory
 

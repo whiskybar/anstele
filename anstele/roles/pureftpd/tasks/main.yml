@@ -12,7 +12,7 @@
     - reload pureftpd
 
 - name: data directory
-  file: path=/var/www/hosting owner={{ owner }} group={{ owner }} state=directory
+  file: path=/var/www/hosting owner={{ owner }} group={{ owner }} mode=775 state=directory
 
 - name: copy dump file
   copy: src=hosting.domains.sql dest=/tmp
