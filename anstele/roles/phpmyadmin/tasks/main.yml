@@ -2,7 +2,7 @@
 - name: phpmyadmin packages
   apt: name=phpmyadmin
 
-- name: create phpmyadmin db tables
+- name: create phpmyadmin db
   shell: "echo 'CREATE DATABASE IF NOT EXISTS `phpmyadmin` DEFAULT CHARACTER SET utf8 COLLATE utf8_bin;' | mysql "
 
 - name: create phpmyadmin db tables
