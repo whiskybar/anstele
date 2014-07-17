@@ -1,0 +1,7 @@
+- name: select hosts for {{ group_name }}
+  command: mysql --defaults-extra-file=~/.my.cnf.3307 hosting -ss -B -e'{{ query }}'
+  register: result
+
+- name: create group {{ group_name }}
+  add_host: hostname={{ item }} groupname={{ group_name }}
+  with_items: result.stdout_lines
