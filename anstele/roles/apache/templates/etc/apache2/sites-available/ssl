@@ -1,4 +1,4 @@
-NameVirtualHost *:443
+{% if installed_version.stdout|version_compare('2.4', '<') %}NameVirtualHost *:443{% endif %}
 <VirtualHost *:443>
     RewriteEngine On
     RewriteOptions Inherit

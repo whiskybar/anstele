@@ -4,8 +4,10 @@
     - /etc/apache2/sites-enabled/000-default
     - /etc/apache2/conf.d/other-vhosts-access-log
 
-- name: apache custom config
-  copy: src=etc/apache2/conf.d dest=/etc/apache2
+- name: apache custom configs     
+  copy: src={{ item }} dest=/etc/apache2/conf.d/{{ item|basename }}.conf
+  with_fileglob:
+    - etc/apache2/conf.d/!(*.2.4)
   notify:
     - restart apache
 

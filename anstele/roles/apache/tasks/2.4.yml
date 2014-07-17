@@ -10,10 +10,10 @@
     - /etc/apache2/conf-enabled/serve-cgi-bin.conf
     - /etc/apache2/conf-available/serve-cgi-bin.conf
 
-- name: apache custom config
+- name: apache custom configs
   copy: src={{ item }} dest=/etc/apache2/conf-enabled/{{ item|basename }}.conf
   with_fileglob:
-    - etc/apache2/conf.d/*
+    - etc/apache2/conf.d/!(*.2.2)
   notify:
     - restart apache
 

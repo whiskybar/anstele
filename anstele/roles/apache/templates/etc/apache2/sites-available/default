@@ -1,4 +1,4 @@
-NameVirtualHost *:80
+{% if installed_version.stdout|version_compare('2.4', '<') %}NameVirtualHost *:80{% endif %}
 <VirtualHost *:80>
     RewriteEngine On
     RewriteOptions Inherit
