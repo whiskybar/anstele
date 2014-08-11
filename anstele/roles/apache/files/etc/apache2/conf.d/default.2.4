@@ -5,6 +5,7 @@ CustomLog "|/usr/bin/cronolog -l /var/log/apache2/access.log /var/log/apache2/%Y
 ServerTokens Prod
 Timeout 30
 KeepAliveTimeout 1
+EnableSendfile On
 
 DocumentRoot /var/www
 

@@ -17,8 +17,11 @@
   notify:
     - restart apache
 
-- name: enable apache ssl dependency modules
-  apache2_module: name=socache_shmcb
+- name: enable additional apache modules
+  apache2_module: name={{ item }}
+  with_items:
+    - socache_shmcb
+    - access_compat
   notify:
     - reload apache
 

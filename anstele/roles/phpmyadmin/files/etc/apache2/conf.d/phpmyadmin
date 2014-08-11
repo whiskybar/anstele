@@ -1,3 +1,8 @@
 <Directory /usr/share/phpmyadmin>
     php_admin_value open_basedir none
 </Directory>
+
+LogFormat "%h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\" %{userID}n %{userStatus}n" pcombined
+SetEnvIf Request_URI /phpmyadmin/index.php pmas
+CustomLog /var/log/phpmyadmin.log pcombined env=pmas
+
