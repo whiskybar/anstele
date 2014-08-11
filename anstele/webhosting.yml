@@ -3,6 +3,7 @@
     owner: "{{ pureftpd_owner|default('www-data') }}"
   roles:
     - common
+    - users
     - cert
     - exim
     - mysql

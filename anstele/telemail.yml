@@ -5,6 +5,7 @@
     user: hosting
   roles:
     - common
+    - users
     - cert
     - telemail
     - php-fpm
