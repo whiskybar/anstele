@@ -1,5 +1,5 @@
 - name: roundcube repository
-  apt_repository: repo=ppa:tuxpoldo/yeasoft-backports
+  apt_repository: repo=ppa:tuxpoldo/roundcube
 
 - name: roundcube packages
   apt: name={{ item }}
