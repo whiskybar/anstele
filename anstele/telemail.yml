@@ -13,4 +13,4 @@
     - nginx
     - exim
     - exim-spam
-#    - dovecot
+    - dovecot

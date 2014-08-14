@@ -16,6 +16,8 @@ never_users = root
 
 smtp_banner = "${primary_hostname} ESMTP Exim ${version_number} #${compile_number} ${tod_full} - MMVER"
 
+local_interfaces = <; ::0.25 ; 0.0.0.0.25; ::0.465; 0.0.0.0.465
+tls_on_connect_ports = 465
 tls_advertise_hosts = *
 tls_certificate = /etc/ssl/certs/{{ inventory_hostname }}.crt
 tls_privatekey = /etc/ssl/private/{{ inventory_hostname }}.key

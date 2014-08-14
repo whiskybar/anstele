@@ -4,7 +4,7 @@ include "/etc/bind/zones.rfc1918";
 {% set zone_file = zone.replace('/', '-') %}
 zone "{{ zone }}" {
     type master;
-    file "/etc/bind/hosting/{{ zone_file }}/{{ zone_file }}.db{% if zone.endswith('.cz') or zone.endswith('.eu') %}.signed{% endif %}";
+    file "/etc/bind/hosting/{{ zone_file }}/{{ zone_file }}.db{% if  zone.endswith('.cz') or zone.endswith('.eu') or zone.endswith('.net') or zone.endswith('.com') or zone.endswith('.org') or zone.endswith('.biz') %}.signed{% endif %}";
 };
 
 {% endfor %}
