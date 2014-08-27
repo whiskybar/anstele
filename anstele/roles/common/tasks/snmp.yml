@@ -1,7 +1,7 @@
 - name: snmp packages
-  apt: name={{ item }}
+  apt: name=snmpd
   with_items:
-    - libsnmp30
+    - "{% if ansible_lsb.major_release|int < 14 %}snmp{% else %}libsnmp30{% endif %}"
     - snmpd
 
 - name: snmp config
