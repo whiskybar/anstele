@@ -40,7 +40,6 @@ class Sql(object):
             try:
                 return self.cursor.execute(query, *args, **kwargs)
             except MySQLdb.OperationalError:
-                raise
                 self.connect()        
 
 
@@ -87,6 +86,7 @@ def read_events(sql, scheduled):
         sql.execute('SELECT %s FROM events ORDER BY id ASC' % ','.join('`%s`' % field for field in Event._fields))
         for event in map(Event._make, sql.cursor):
             scheduled.put(event)
+            sql.execute('DELETE FROM events WHERE id = %d' % event.id)
             logging.debug('%s [SCHEDULED]: %s %s %s %s', event.id, event.created, event.type, event.host, event.command)
         eventlet.sleep(POLL_INTERVAL)
 
@@ -94,9 +94,11 @@ def schedule_events(scheduled, running):
     parallel = True
     while True:
         event = scheduled.get()
+        logging.debug('%s [SCHEDULING]: %s %s %s %s', event.id, event.created, event.type, event.host, event.command)
         if not parallel or not event.parallel:
             running.join()
         parallel = event.parallel
+        logging.debug('%s [TO RUN]: %s %s %s %s', event.id, event.created, event.type, event.host, event.command)
         running.put(event)
 
 def run_events(sql, running):
@@ -109,7 +111,6 @@ def run_events(sql, running):
 
 def confirm_event(thread, event, sql, running, started):
     output = thread.wait()
-    sql.execute('DELETE FROM events WHERE id = %d' % event.id)
     running.task_done()
     finished = datetime.datetime.now()
     duration = datetime.datetime.now() - started

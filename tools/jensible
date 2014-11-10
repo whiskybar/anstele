@@ -1,0 +1,89 @@
+#!/usr/bin/python
+
+import requests
+import time
+import sys
+import signal
+import datetime
+import shlex
+import logging
+import logging.handlers
+import collections
+import MySQLdb
+
+
+POLL_INTERVAL = 2
+RECONNECT_INTERVAL = 60
+OPTION_FILE = '/root/.my.cnf.3307'
+DATABASE = 'hosting'
+PARALLEL_TASKS = 10
+JENKINS_URL = 'https://jenkins.tele3.cz'
+API_TOKEN = 'd0666d15ae406c4676acad8b3b8eb2bc'
+
+Event = collections.namedtuple('Event', 'id created user type host command timeout parallel')
+
+class Sql(object):
+    def __init__(self, reconnect_interval=RECONNECT_INTERVAL, **connection_kwargs):
+        self.reconnect_interval = reconnect_interval
+        self.connection_kwargs = connection_kwargs
+        self.connect()
+        
+    def connect(self):
+        while True:
+            try:
+                self.cursor = MySQLdb.connect(**self.connection_kwargs).cursor()
+                return
+            except MySQLdb.OperationalError:
+                time.sleep(self.reconnect_interval)
+
+    def execute(self, query, *args, **kwargs):
+        while True:
+            try:
+                return self.cursor.execute(query, *args, **kwargs)
+            except MySQLdb.OperationalError:
+                self.connect()        
+
+
+def shutdown(signal, frame):
+    sys.exit(0)
+
+def configure_logging():
+    rh = logging.handlers.TimedRotatingFileHandler(
+        filename='/var/log/jensible.log',
+        when='midnight',
+    )
+    rh.setFormatter(logging.Formatter('%(asctime)s - %(message)s'))
+    logger = logging.getLogger('')
+    logger.setLevel(logging.DEBUG)
+    logger.addHandler(rh)
+
+def get_csrf_token(url):
+    result = requests.get('%s/crumbIssuer/api/json' % url, verify=False).json()
+    return {result['crumbRequestField']: result['crumb']}
+
+def process_events(sql, url, csrf):
+    while True:
+        sql.execute('SELECT %s FROM events ORDER BY id ASC' % ','.join('`%s`' % field for field in Event._fields))
+        for event in map(Event._make, sql.cursor):
+            requests.post(
+               '%s/job/ansible_remote/buildWithParameters' % url,
+               params={'token': API_TOKEN},
+               data={'host': event.host, 'command': event.command},
+               headers=csrf,
+               verify=False,
+            )
+            sql.execute('DELETE FROM events WHERE id = %d' % event.id)
+            logging.debug('%s [SCHEDULED]: %s %s %s %s', event.id, event.created, event.type, event.host, event.command)
+        time.sleep(POLL_INTERVAL)
+
+def main():
+    signal.signal(signal.SIGTERM, shutdown)
+    signal.signal(signal.SIGINT, shutdown)
+
+    configure_logging()
+    sql = Sql(read_default_file=OPTION_FILE, db=DATABASE)
+    csrf = get_csrf_token(JENKINS_URL)
+    process_events(sql, JENKINS_URL, csrf)
+
+if __name__ == '__main__':
+    main()
