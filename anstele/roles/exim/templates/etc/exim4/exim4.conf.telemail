@@ -41,7 +41,7 @@ spamd_address = /var/run/spamd.sock
 domainlist local_domains = @mx_any
 addresslist local_recipients = sqlite;SQLITEDB \
     SELECT address FROM addresses_account WHERE address = '$local_part@$domain' UNION \
-    SELECT alias FROM addresses_other WHERE alias = '$local_part@$domain' UNION \
+    SELECT alias FROM addresses_other WHERE '$local_part@$domain' LIKE alias UNION \
     SELECT address FROM addresses_forward WHERE address = '$local_part@$domain';
 hostlist relay_from_hosts = @[]
 hostlist trusted_hosts = *.nic.cz : *.subreg.cz : *.ascio.com : *.seznam.cz : *.google.com : *.googlemail.com : monitoring.tele3.cz : sip.tele3.cz
@@ -57,7 +57,7 @@ hostlist nospam_hosts = sqlite;SQLITEDB \
     SELECT host FROM spam_nospamhost \
     WHERE '$sender_host_address' LIKE host OR '$sender_host_name' LIKE host;
 addresslist nospam_recipients = sqlite;SQLITEDB \                     
-    SELECT host FROM spam_nospamrecipient \
+    SELECT address FROM spam_nospamrecipient \
     WHERE '$local_part@$domain' LIKE address;
 
 begin acl
@@ -213,7 +213,7 @@ hosting_alias:
         SELECT address \
         FROM addresses_alias JOIN addresses_other \
         ON addresses_alias.id = origin_id \
-        WHERE alias = '$local_part@$domain';}{$value}fail}
+        WHERE '$local_part@$domain' LIKE alias;}{$value}fail}
     no_verify
 
 hosting_trash:
@@ -287,17 +287,17 @@ FROM_ADDRESS = ${address:$reply_address}
 
 SIGN_RP = ${lookup sqlite{SQLITEDB \
     SELECT address FROM addresses_account WHERE address = '$return_path' UNION \
-    SELECT alias FROM addresses_other WHERE alias = '$return_path' UNION \
+    SELECT alias FROM addresses_other WHERE '$return_path' LIKE alias UNION \
     SELECT address FROM addresses_forward WHERE address = '$return_path';}{${prvs {$return_path}{PRVS_SECRET}}}{$return_path}}
 
 SIGN_DEFAULT_RETURN_PATH = ${lookup sqlite{SQLITEDB \
     SELECT address FROM addresses_account WHERE address = 'DEFAULT_RP' UNION \
-    SELECT alias FROM addresses_other WHERE alias = 'DEFAULT_RP' UNION \
+    SELECT alias FROM addresses_other WHERE 'DEFAULT_RP' LIKE alias UNION \
     SELECT address FROM addresses_forward WHERE address = 'DEFAULT_RP';}{${prvs {DEFAULT_RP}{PRVS_SECRET}}}{DEFAULT_RP}}
 
 SIGN_FA = ${lookup sqlite{SQLITEDB \
     SELECT address FROM addresses_account WHERE address = 'FROM_ADDRESS' UNION \
-    SELECT alias FROM addresses_other WHERE alias = 'FROM_ADDRESS' UNION \
+    SELECT alias FROM addresses_other WHERE 'FROM_ADDRESS' LIKE alias UNION \
     SELECT address FROM addresses_forward WHERE address = 'FROM_ADDRESS';}{${prvs {FROM_ADDRESS}{PRVS_SECRET}}}{FROM_ADDRESS}}
 
 SIGN_VALID_FA = ${if eq{FROM_ADDRESS}{}{SIGN_DEFAULT_RETURN_PATH}{SIGN_FA}}
