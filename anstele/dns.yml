@@ -1,0 +1,6 @@
+- hosts: dns
+  roles:
+    - common
+    - exim
+    - rsync
+    - dns

@@ -1,8 +1,14 @@
 - name: rsync packages
   apt: name=rsync
 
-- name: rsync config
-  copy: src=etc dest=/
+- name: rsync daemon config
+  copy: src=etc/default/rsync dest=/etc/default/rsync
   notify:
     - restart rsync
+
+- name: rsync user config
+  copy: src=etc/rsyncd.conf{% if 'dns' in group_names %}.dns{% endif %} dest=/etc/rsyncd.conf
+
+- name: rsync password config
+  copy: src=etc/rsyncd.secrets dest=/etc/rsyncd.secrets mode=0600
   

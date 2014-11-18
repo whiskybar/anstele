@@ -1,0 +1,6 @@
+- name: bind repository
+  apt_repository: repo=ppa:malcscott/bind9.9
+
+- name: bind packages
+  apt: name=bind9
+
