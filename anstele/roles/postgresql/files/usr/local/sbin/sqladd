@@ -1,0 +1,13 @@
+#!/bin/bash
+
+DBNAME="$1"
+USER="$2"
+PASSWORD="$3"
+
+[ -z "$PASSWORD" ] && { echo "Usage: $(basename $0) DBNAME USERNAME PASSWORD" >&2; exit 1; }
+
+createdb -U postgres $DBNAME
+psql -U postgres -c "REVOKE ALL ON DATABASE $DBNAME FROM public"
+psql -U postgres -c "CREATE ROLE $USER WITH login PASSWORD '$PASSWORD'"
+psql -U postgres -c "ALTER DATABASE $DBNAME OWNER TO $USER"
+

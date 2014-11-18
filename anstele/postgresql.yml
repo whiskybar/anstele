@@ -2,6 +2,10 @@
   roles:
 #    - common
 #    - users
+#    - cert
 #    - exim
 #    - rsync
     - postgresql
+    - nginx
+    - php-fpm
+    - phppgadmin

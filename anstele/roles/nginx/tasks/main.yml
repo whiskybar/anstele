@@ -1,0 +1,18 @@
+- name: disable apache
+  service: name=apache2 state=stopped enabled=no
+
+- name: nginx packages
+  apt: name=nginx
+
+- name: disable the default site
+  file: path=/etc/nginx/sites-enabled/default state=absent
+  notify:
+    - reload nginx
+
+- name: enable sites by group
+  template: src={{ item }} dest=/etc/nginx/sites-enabled/{{ item|basename }}
+  with_fileglob:
+    - ../templates/etc/nginx/sites-enabled/*
+  when: item|basename in group_names
+  notify:
+    - reload nginx

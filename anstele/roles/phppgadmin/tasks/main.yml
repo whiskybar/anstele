@@ -1,0 +1,8 @@
+- name: phppgadmin packages
+  apt: name={{ item }}
+  with_items:
+    - phppgadmin
+    - adminer
+
+- name: phppgadmin config
+  copy: src=etc/phppgadmin/config.inc.php dest=/etc/phppgadmin/config.inc.php
