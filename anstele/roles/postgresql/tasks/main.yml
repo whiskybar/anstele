@@ -23,5 +23,9 @@
 - name: postgresql root user
   postgresql_user: name=admin password={{ mysql.root_password }} role_attr_flags=SUPERUSER,LOGIN
 
-- name: user add script
-  copy: src=usr/local/sbin/sqladd dest=/usr/local/sbin/sqladd mode=0755
+- name: install psql utilities
+  copy: src=usr/local/sbin dest=/usr/local
+
+- name: enable daily backups
+  cron: name="backup all databases" hour=0 minute=43 job=/usr/local/sbin/psqldump cron_file=dumpalldb user=root
+

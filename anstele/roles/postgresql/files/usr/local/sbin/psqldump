@@ -1,0 +1,10 @@
+#!/bin/bash
+
+mkdir -p /var/lib/dumps
+psql -U postgres -A -t -l |
+    cut -f 1 -d '|' |
+    grep -v '\(postgres\|template[0-9]\)' |
+    while read DB; do
+	    pg_dump -U postgres $DB >/var/lib/dumps/$DB.sql
+done
+
