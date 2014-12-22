@@ -3,6 +3,8 @@
   vars:
     virtualenv: /home/hosting/telemail
     user: hosting
+  vars_prompt:
+    admin_password: Admin password
   roles:
     - common
     - users

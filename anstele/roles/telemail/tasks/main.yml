@@ -34,3 +34,13 @@
   copy: src=etc dest=/
   notify:
       - restart telemail
+
+- name: create admin user
+  sudo: yes
+  sudo_user: "{{ user }}"
+  command: /home/hosting/telemail/bin/django-admin.py createsuperuser --pythonpath=/etc/telemail --settings=settings --username=admin --email=admin@{{ inventory_hostname.split('.')[-2:]|join('.') }} --noinpu
+
+- name: set admin password
+  sudo: yes
+  sudo_user: "{{ user }}"
+  command: /home/hosting/telemail/bin/django-admin.py changepassword2 --pythonpath=/etc/telemail --settings=settings admin {{ admin_password }}

@@ -36,6 +36,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_stackato',
     'telemail.domains',
     'telemail.addresses',
     'telemail.spam',

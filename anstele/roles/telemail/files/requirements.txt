@@ -1,3 +1,4 @@
 git+https://github.com/whiskybar/telemail.git#egg=telemail
 gunicorn
 gevent
+django-stackato==1.0
