@@ -42,6 +42,9 @@
 - name: create hosting user
   mysql_user: name=hosting password={{ mysql.hosting_password }} priv=hosting.*:ALL
 
+- name: create creator user
+  mysql_user: name=creator host={{ mysql.creator_host }} password={{ mysql.creator_password }} priv=*.*:ALL,GRANT state=present
+
 - name: install mysql utilities
   copy: src=usr/local/sbin dest=/usr/local
 
