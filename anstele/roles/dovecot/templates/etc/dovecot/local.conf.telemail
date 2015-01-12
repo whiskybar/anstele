@@ -4,7 +4,7 @@ passdb {
     args = /etc/dovecot/local-sqlite.conf
 }
 userdb {
-    driver = static
+    driver = sql
     args = /etc/dovecot/local-sqlite.conf
 }
 auth_mechanisms = plain login

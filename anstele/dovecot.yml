@@ -1,7 +1,0 @@
-- hosts: all
-  tasks:
-    - name: dovecot repository
-      apt_repository: repo="ppa:malte.swart/dovecot-2.2"
-
-    - name: dovecot packages
-      command: apt-get install -y dovecot-core -o "Dpkg::Options::=--force-confdef" -o "Dpkg::Options::=--force-confold"
