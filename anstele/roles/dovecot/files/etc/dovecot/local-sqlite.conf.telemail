@@ -6,4 +6,10 @@ default_pass_scheme = SHA512-CRYPT
 password_query = SELECT address AS username, password \
      FROM addresses_account \
      WHERE address = '%u'
+user_query = SELECT \
+     'hosting' AS uid, \
+     'hosting' AS gid, \
+     '/var/mail/%d/%n' as home, \
+     'mdbox:~/mdbox' as mail
+iterate_query = SELECT address AS user FROM addresses_account
 

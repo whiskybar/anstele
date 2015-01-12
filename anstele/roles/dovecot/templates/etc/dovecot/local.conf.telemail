@@ -5,7 +5,7 @@ passdb {
 }
 userdb {
     driver = static
-    args = uid=hosting gid=hosting home=/var/mail/%d/%n mail=mdbox:~/mdbox
+    args = /etc/dovecot/local-sqlite.conf
 }
 auth_mechanisms = plain login
 
