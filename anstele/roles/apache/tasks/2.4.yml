@@ -1,33 +1,7 @@
-- name: remove example configs
-  file: path={{ item }} state=absent
-  with_items:
-    - /etc/apache2/sites-enabled/000-default.conf
-    - /etc/apache2/sites-available/000-default.conf
-    - /etc/apache2/sites-enabled/default-ssl.conf
-    - /etc/apache2/sites-available/default-ssl.conf
-    - /etc/apache2/conf-enabled/other-vhosts-access-log.conf
-    - /etc/apache2/conf-available/other-vhosts-access-log.conf
-    - /etc/apache2/conf-enabled/serve-cgi-bin.conf
-    - /etc/apache2/conf-available/serve-cgi-bin.conf
-
 - name: apache custom configs
-  copy: src={{ item }} dest=/etc/apache2/conf-enabled/{{ item|basename }}.conf
+  copy: src={{ item }} dest=/etc/apache2/conf-enabled/{{ item.rsplit('/', 1)[-1].split('.', 1)[0] }}.conf
   with_fileglob:
-    - etc/apache2/conf.d/!(*.2.2)
+    - etc/apache2/conf.d/*
+  when: not item.endswith('.2.2')
   notify:
     - restart apache
-
-- name: enable additional apache modules
-  apache2_module: name={{ item }}
-  with_items:
-    - socache_shmcb
-    - access_compat
-  notify:
-    - reload apache
-
-- name: apache site config
-  template: src={{ item }} dest=/{{ item }}.conf
-  with_items:
-    - etc/apache2/sites-available/default
-    - etc/apache2/sites-available/ssl
-

@@ -5,9 +5,10 @@
     - /etc/apache2/conf.d/other-vhosts-access-log
 
 - name: apache custom configs     
-  copy: src={{ item }} dest=/etc/apache2/conf.d/{{ item|basename }}.conf
+  copy: src={{ item }} dest=/etc/apache2/conf.d/{{ item.rsplit('/', 1)[-1].split('.', 1)[0] }}.conf
   with_fileglob:
-    - etc/apache2/conf.d/!(*.2.4)
+    - etc/apache2/conf.d/*
+  when: not item.endswith('.2.4')
   notify:
     - restart apache
 
