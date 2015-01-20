@@ -1,4 +1,5 @@
 LogLevel crit
+#LogLevel warn rewrite:trace8
 LogFormat "%{Host}i %h %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" vcombined
 CustomLog "|/usr/bin/cronolog -l /var/log/apache2/access.log /var/log/apache2/%Y/%m/%d/%H.log" vcombined
 

@@ -1,3 +1,12 @@
+- name: remove example configs
+  file: path={{ item }} state=absent
+  with_items:
+    - /etc/apache2/sites-enabled/000-default.conf
+    - /etc/apache2/sites-available/000-default.conf
+    - /etc/apache2/sites-enabled/default-ssl.conf
+    - /etc/apache2/sites-available/default-ssl.conf
+    - /etc/apache2/conf-available/other-vhosts-access-log
+
 - name: apache custom configs
   copy: src={{ item }} dest=/etc/apache2/conf-enabled/{{ item.rsplit('/', 1)[-1].split('.', 1)[0] }}.conf
   with_fileglob:
@@ -5,3 +14,12 @@
   when: not item.endswith('.2.2')
   notify:
     - restart apache
+
+- name: apache site config
+  template: src={{ item }} dest=/{{ item }}.conf
+  with_items:
+    - etc/apache2/sites-available/default
+    - etc/apache2/sites-available/ssl
+  notify:
+    - restart apache
+            
