@@ -5,7 +5,7 @@
   apt_repository: repo="deb http://ppa.launchpad.net/unnet-pkg-master/php-release/ubuntu lucid main"
 
 - name: PHP 5.2 deb
-  get_url: url=https://replicator.tele3.cz/packages/libmysqlclient16_5.1.58-1ubuntu1_amd64.deb dest=/tmp/libmysqlclient16_5.1.58-1ubuntu1_amd64.deb
+  get_url: url=http://replicator.tele3.cz/packages/libmysqlclient16_5.1.58-1ubuntu1_amd64.deb dest=/tmp/libmysqlclient16_5.1.58-1ubuntu1_amd64.deb
 
 - name: PHP 5.2 dependencies
   apt: deb=/tmp/libmysqlclient16_5.1.58-1ubuntu1_amd64.deb

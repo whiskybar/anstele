@@ -3,15 +3,14 @@ deb http://mirror.hetzner.de/ubuntu/packages {{ ansible_lsb.codename }} main res
 deb http://mirror.hetzner.de/ubuntu/packages {{ ansible_lsb.codename }}-backports main restricted universe multiverse
 deb http://mirror.hetzner.de/ubuntu/packages {{ ansible_lsb.codename }}-updates main restricted universe multiverse
 deb http://mirror.hetzner.de/ubuntu/security {{ ansible_lsb.codename }}-security main restricted universe multiverse 
-{% endif -%}
-{%- if ansible_lsb.codename not in supported_releases %}
-{% set server = 'old-releases.ubuntu.com' %}
-{% elif 'hetzner' in group_names %}
-{% set server = 'de.archive.ubuntu.com' %}
 {% else %}
-{% set server = 'cz.archive.ubuntu.com' %}
+{%- if ansible_lsb.codename in supported_releases %}
+{% set server = 'archive.ubuntu.com' %}
+{% else %}
+{% set server = 'old-releases.ubuntu.com' %}
 {% endif -%}
 deb http://{{ server }}/ubuntu/ {{ ansible_lsb.codename }} main restricted universe multiverse 
 deb http://{{ server }}/ubuntu/ {{ ansible_lsb.codename }}-security main restricted universe multiverse 
 deb http://{{ server }}/ubuntu/ {{ ansible_lsb.codename }}-updates main restricted universe multiverse 
 deb http://{{ server }}/ubuntu/ {{ ansible_lsb.codename }}-backports main restricted universe multiverse 
+{% endif -%}
