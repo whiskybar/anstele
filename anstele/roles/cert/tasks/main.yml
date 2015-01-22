@@ -17,23 +17,5 @@
   register: expired
   ignore_errors: True
 
-- name: create new certificate
-  command: "{{ item }} chdir=/etc/ssl"
-  delegate_to: 127.0.0.1
-  with_items:
-    - openssl genrsa -out private/{{ inventory_hostname }}.key 2048
-    - openssl req -new -key private/{{ inventory_hostname }}.key -config openssl.cnf -out requests/{{ inventory_hostname }}.csr -subj "/C=CZ/ST=Czech Republic/L=Prague/O=TELE3/OU=Webserver Team/CN={{ inventory_hostname }}/emailAddress=jbar@tele3.cz"
-    - openssl ca -config openssl.cnf -in requests/{{ inventory_hostname }}.csr -out certs/{{ inventory_hostname }}.crt -notext -batch
+- include: create.yml
   when: cert_exists|failed or expired|success or force|default(False)
-  notify:
-    - upload private key
-    - access the private key
-    - upload certificate
-    - pureftpd certificate
-    - reload apache
-    - reload nginx
-    - reload pureftpd-mysql
-    - reload pureftpd
-
-- name: access the key directory
-  file: path=/etc/ssl/private state=directory mode=755
