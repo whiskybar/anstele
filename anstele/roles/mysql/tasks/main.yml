@@ -1,9 +1,13 @@
-- name: install mysql packages
+- include: mariadb.yml
+  when: mariadb|default(False)
+
+- include: mysql.yml
+  when: not mariadb|default(False)
+
+- name: install mysql common packages
   apt: name={{ item }} update_cache=yes
   with_items:
     - python-mysqldb
-    - mysql-client
-    - mysql-server
 
 - name: customize mysql config
   copy: src={{ item }} dest=/etc/mysql/conf.d/general.cnf
@@ -47,6 +51,14 @@
 
 - name: install mysql utilities
   copy: src=usr/local/sbin dest=/usr/local
+
+- name: if file exist
+  stat: path=/usr/local/sbin/dumpalldb
+  register: st
+
+- name: set execute
+  file: path=/usr/local/sbin/dumpalldb state=touch mode=755
+  when: st.stat.exists
 
 - name: enable daily backups
   cron: name="backup all databases" hour=0 minute=43 job=/usr/local/sbin/dumpalldb cron_file=dumpalldb user=root

@@ -1,0 +1,10 @@
+- name: mariadb apt key
+  apt_key: id=0xcbcb082a1bb943db keyserver=hkp://keyserver.ubuntu.com:80
+
+- name: mariadb repository
+  apt_repository: repo="deb http://mirror.hosting90.cz/mariadb/repo/10.0/ubuntu {{ ansible_distribution_release }} main"
+
+- name: install mariadb packages
+  apt: name={{ item }} update_cache=yes
+  with_items:
+    - mariadb-server
