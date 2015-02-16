@@ -1,0 +1,22 @@
+- name: maldet main
+  synchronize: src=usr/local/maldetect/ dest=/usr/local/maldetect
+
+- name: maldet main2
+  synchronize: src=usr/local/sbin/ dest=/usr/local/sbin links=yes
+
+- name: maldet lib
+  copy: src=usr/lib/ dest=/usr/lib
+
+- name: maldet conf
+  synchronize: src=etc/ dest=/etc links=yes
+  
+- name: maldet update
+  shell: "maldet --update"
+
+- name: maldet update
+  shell: "maldet --update"
+
+    
+  
+
+  
