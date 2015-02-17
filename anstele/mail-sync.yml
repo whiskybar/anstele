@@ -17,7 +17,6 @@
       - accounts       
       - aliases
       - redirects         
-      - copies
       - relayfromhosts
   roles:
     - exim-sync

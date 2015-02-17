@@ -14,7 +14,6 @@ def run(host):
             'nospamhosts': single('nospamhosts', 'host'),
             'nospamrecipients': single('nospamrecipients', 'recipient'),
             'spam': single('spam', 'text'),
-            'copies': mapping('mailcopy', 'source', 'destination'),
             'aliases': mapping('mailaliases', 'source', 'destination'),
             'redirects': mapping('mailredirects', 'source', 'destination'),
             'trash': trash(),
