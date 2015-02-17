@@ -9,6 +9,7 @@
     - mysql
     - apache
     - php
+    - maldet
     - phpmyadmin
     - pureftpd
     - rsync
