@@ -4,5 +4,5 @@
 mkdir -p /var/lib/dumps
 mysql -ss -e'SHOW DATABASES' | grep -v _schema |
 	while read DB; do
-		mysqldump -R $DB >/var/lib/dumps/$DB.sql
+		mysqldump -E -R $DB >/var/lib/dumps/$DB.sql
 	done

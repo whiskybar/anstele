@@ -28,6 +28,10 @@
   notify:
     - reload mysql
 
+- name: rotate error logs
+  lineinfile: dest=/etc/logrotate.d/mysql-server regexp="^/var/log/mysql.log" line="/var/log/mysql.log /var/log/mysql/mysql.log /var/log/mysql/mysql-slow.log /var/log/mysql/error.log {"
+  ignore_errors: yes
+
 - name: create root user
   mysql_user: name=root password={{ mysql.root_password }}
 
@@ -62,3 +66,8 @@
 
 - name: enable daily backups
   cron: name="backup all databases" hour=0 minute=43 job=/usr/local/sbin/dumpalldb cron_file=dumpalldb user=root
+
+- name: set cron mail
+  lineinfile: dest=/etc/cron.d/dumpalldb insertbefore='BOF' line='MAILTO=info@tele3.cz'
+          
+          
