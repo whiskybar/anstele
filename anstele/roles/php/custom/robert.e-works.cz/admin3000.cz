@@ -1,0 +1,5 @@
+<Directory /var/www/hosting/admin3000.cz>
+	php_admin_value open_basedir none
+</Directory>
+
+

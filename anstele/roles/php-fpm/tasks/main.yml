@@ -23,3 +23,6 @@
   notify:
     - reload php-fpm
 
+- name: default site
+  copy: src=../../php/files/var/www/default dest=/var/www
+
