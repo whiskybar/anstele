@@ -12,7 +12,11 @@
   file: path=/etc/ssl/private mode=711
 
 - name: customize exim4.conf
-  template: src=etc/exim4/exim4.conf{% if 'mailer' in group_names %}.mailer{% elif 'telemail' in group_names %}.telemail{% endif %} dest=/etc/exim4/exim4.conf mode=644
+  template: src={{ item }} dest=/etc/exim4/exim4.conf mode=644
+  with_first_found:
+    - files: "{{ [inventory_hostname] + group_names + ['all'] }}"
+      paths:
+        - ../templates/etc/exim4/exim4.conf
   notify:
     - reload exim
 
