@@ -1,5 +1,6 @@
 - name: disable apache
   service: name=apache2 state=stopped enabled=no
+  ignore_errors: yes
 
 - name: nginx packages
   apt: name=nginx
@@ -14,5 +15,11 @@
   with_fileglob:
     - ../templates/etc/nginx/sites-enabled/*
   when: item|basename in group_names
+  notify:
+    - reload nginx
+
+- name: enable site by hostname
+  template: src=etc/nginx/sites-enabled/{{ inventory_hostname }} dest=/etc/nginx/sites-enabled/{{ inventory_hostname }}
+  ignore_errors: yes
   notify:
     - reload nginx
