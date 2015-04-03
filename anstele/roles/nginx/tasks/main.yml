@@ -19,7 +19,7 @@
     - reload nginx
 
 - name: enable site by hostname
-  template: src=etc/nginx/sites-enabled/{{ inventory_hostname }} dest=/etc/nginx/sites-enabled/{{ inventory_hostname }}
-  ignore_errors: yes
+  template: src={{ item }} dest=/etc/nginx/sites-enabled/{{ inventory_hostname }}
+  with_fileglob: ../templates/etc/nginx/sites-enabled/{{ inventory_hostname }}
   notify:
     - reload nginx
