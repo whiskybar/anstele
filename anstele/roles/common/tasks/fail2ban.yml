@@ -1,5 +1,5 @@
 - name: fail2ban repository
-  apt_repository: repo="ppa:thomas-creutz/webserver"
+  apt_repository: repo="ppa:leonbo/fail2ban"
   when: ansible_lsb.major_release|int < 14
 
 - name: fail2ban packages
@@ -8,8 +8,15 @@
     - python-pyinotify
     - fail2ban
 
+- name: Check to see if /var/log/messages exists
+  stat: path=/var/log/messages
+  register: messages_conf
+
 - name: fail2ban config
-  template: src=etc/fail2ban/jail.local dest=/etc/fail2ban/jail.local
+  template: src={{ item }} dest=/etc/fail2ban/jail.local
+  with_first_found:
+    - ../templates/etc/fail2ban/jail.local.{{ inventory_hostname }}
+    - ../templates/etc/fail2ban/jail.local
   notify:
     - reload fail2ban
 
