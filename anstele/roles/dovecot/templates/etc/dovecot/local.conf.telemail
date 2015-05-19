@@ -44,3 +44,8 @@ ssl_cert = </etc/ssl/certs/{{ inventory_hostname }}.crt
 ssl_key = </etc/ssl/private/{{ inventory_hostname }}.key
 
 lda_mailbox_autocreate = yes
+
+protocol lmtp {
+    mail_plugins = sieve
+}
+
