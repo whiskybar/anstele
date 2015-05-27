@@ -54,7 +54,7 @@
   mysql_user: name=creator host={{ mysql.creator_host }} password={{ mysql.creator_password }} priv=*.*:ALL,GRANT state=present
 
 - name: install mysql utilities
-  copy: src=usr/local/sbin dest=/usr/local
+  copy: src=usr/local/sbin dest=/usr/local mode=0755
 
 - name: enable daily backups
   cron: name="backup all databases" hour=0 minute=43 job=/usr/local/sbin/dumpalldb cron_file=dumpalldb user=root
