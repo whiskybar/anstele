@@ -1,0 +1,22 @@
+- name: install cronurl dependencies
+  apt: name=python-mysqldb
+
+- name: install cronurl
+  sudo: yes
+  sudo_user: "{{ user }}"
+  pip: name="git+https://github.com/whiskybar/cronurl.git#egg=cronurl" virtualenv={{ virtualenv }} virtualenv_site_packages=yes
+
+- name: create directories
+  file: path=/var/log/hosting owner={{ user }} group={{ user }} state=directory
+
+- name: copy cronurl sql file
+  copy: src=hosting.cron.sql dest=/tmp
+
+- name: import cronurl sql file
+  mysql_db: name=hosting target=/tmp/hosting.cron.sql state=import
+
+- name: configure init script for cronurl
+  template: src=etc/init/cronurl.conf dest=/etc/init/cronurl.conf
+  notify:
+      - restart cronurl
+

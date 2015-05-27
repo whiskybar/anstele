@@ -1,0 +1,11 @@
+---
+- hosts: cronurl
+  vars:
+    virtualenv: /home/hosting/cronurl
+    user: hosting
+  roles:
+    - common
+    - users
+    - exim
+    - mysql
+    - cronurl
