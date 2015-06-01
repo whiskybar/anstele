@@ -27,7 +27,11 @@ enabled  = true
 port     = ftp,ftp-data,ftps,ftps-data
 filter   = pure-ftpd
 action   = iptables-multiport[name=pureftpd, port="ftp,ftp-data,ftps,ftps-data", protocol=tcp]
+{% if messages_conf.stat.exists %}
 logpath  = /var/log/messages
+{% else %}
+logpath  = /var/log/syslog
+{% endif %}
 bantime  = 3600
 maxretry = 3
 {% endif %}

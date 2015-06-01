@@ -43,7 +43,7 @@ addresslist local_recipients = sqlite;SQLITEDB \
     SELECT address FROM addresses_account WHERE address = '$local_part@$domain' UNION \
     SELECT alias FROM addresses_other WHERE '$local_part@$domain' LIKE alias UNION \
     SELECT address FROM addresses_forward WHERE address = '$local_part@$domain';
-hostlist relay_from_hosts = @[]
+hostlist relay_from_hosts = {{ exim_relay_allowed|default('@[]') }}
 hostlist trusted_hosts = *.nic.cz : *.subreg.cz : *.ascio.com : *.seznam.cz : *.google.com : *.googlemail.com : monitoring.tele3.cz : sip.tele3.cz
 domainlist trash_domains = sqlite;SQLITEDB \
     SELECT trash FROM domains_domaintrash WHERE domain = '$domain';

@@ -34,3 +34,12 @@
 - name: set up bridge networking 3
   lineinfile: dest=/etc/network/interfaces insertafter='iface br0 inet6 static' line='  post-up mii-tool -F {{ negotiation.stdout }} {{ ansible_default_ipv4.interface }}'
   when: bridge_networking|failed and negotiation|success
+
+- name: register virt
+  delegate_to: "{{ master.mrtg }}"
+  command: /etc/mrtg/acrhost.sh {{ inventory_hostname }}
+
+- name: update virt config
+  delegate_to: "{{ master.mrtg }}"
+  command: /etc/virts/listvirtssqli.sh {{ inventory_hostname }}
+

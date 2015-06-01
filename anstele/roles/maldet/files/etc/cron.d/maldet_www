@@ -1,2 +1,2 @@
-5 2 * * * root /usr/local/maldetect/maldet -b -r /var/www/hosting 1 >> /dev/null 2>&1
+5 2 * * * root /usr/local/maldetect/maldet -b -r /var/www/hosting 2 >> /dev/null 2>&1
 

@@ -12,3 +12,9 @@
 - name: register snmpd
   delegate_to: "{{ master.mrtg }}"
   command: /etc/mrtg/acrnew.sh  {{ inventory_hostname.replace('.', '') }}  {{ inventory_hostname }} 
+
+- name: update snmpd
+  delegate_to: "{{ master.mrtg }}"
+  command: /etc/mrtg/aupdnet.sh  {{ inventory_hostname.replace('.', '') }} 
+
+
