@@ -1,0 +1,59 @@
+- name: install steal dependencies
+  apt: name={{ item }}
+  with_items:
+      - mercurial
+      - python-mysqldb
+
+- name: create ssh directory
+  file: path=/home/{{ user }}/.ssh owner={{ user }} group={{ user }}
+
+- name: copy the deployment key
+  copy: src=/etc/ansible/deploy dest=/home/{{ user }}/.ssh/deploy owner={{ user }} group={{ user }} mode=600
+
+- name: create ssh config
+  file: path=/home/{{ user }}/.ssh/config state=touch
+
+- name: set the deployment key hosts
+  lineinfile: |
+      dest=/home/{{ user }}/.ssh/config line='Host bitbucket.org
+      StrictHostKeyChecking no
+      IdentityFile /home/{{ user }}/.ssh/deploy'
+
+- name: check out steal
+  sudo: yes
+  sudo_user: "{{ user }}"
+  pip: name="hg+ssh://hg@bitbucket.org/whiskybar/steal@spanhel#egg=steal" virtualenv={{ virtualenv }} virtualenv_site_packages=yes
+
+- name: unpack steal requirements
+  unarchive: src={{ item }} dest=/tmp owner={{ user }} group={{ user }}
+  with_items:
+      - fred-distutils-1.3.0.tar.gz
+      - fred-client-2.7.0.tar.gz
+
+- name: adjust archive permissions
+  file: path=/tmp/{{ item }} state=directory owner={{ user }} group={{ user }}
+  with_items:
+      - fred-distutils-1.3.0
+      - fred-client-2.7.0
+
+- name: install steal requirements
+  sudo: yes
+  sudo_user: "{{ user }}"
+  command: "{{ virtualenv }}/bin/python setup.py install chdir=/tmp/{{ item }}"
+  with_items:
+      - fred-distutils-1.3.0
+      - fred-client-2.7.0
+
+- name: create directories
+  file: path=/var/log/hosting owner={{ user }} group={{ user }} state=directory
+
+- name: copy steal sql file
+  copy: src=hosting.chytni.sql dest=/tmp
+
+- name: import steal sql file
+  mysql_db: name=hosting target=/tmp/hosting.chytni.sql state=import
+
+- name: configure init script for steal
+  template: src=etc/init/steal.conf dest=/etc/init/steal.conf
+  notify:
+      - restart steal

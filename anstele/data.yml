@@ -1,0 +1,15 @@
+- hosts: nightbat.tele3.cz
+  vars:
+    virtualenv: /home/hosting/steal
+    user: hosting
+  roles:
+#    - exim
+#    - mysql
+#    - common
+#    - users
+#    - cert
+#    - rsync
+#    - nginx
+#    - php-fpm
+#    - phpmyadmin
+    - steal
