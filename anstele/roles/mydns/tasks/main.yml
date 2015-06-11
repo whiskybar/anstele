@@ -1,0 +1,11 @@
+- name: create mydns database
+  mysql_db: name=mydns
+
+- name: copy mydns sql file
+  copy: src=mydns.sql dest=/tmp
+
+- name: import mydns sql file
+  mysql_db: name=mydns target=/tmp/mydns.sql state=import
+
+- name: copy mydns web frontend
+  unarchive: src=mydnsconfig.tar.bz2 dest=/var/www

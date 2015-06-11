@@ -7,8 +7,8 @@
     - restart rsync
 
 - name: rsync user config
-  copy: src=etc/rsyncd.conf{% if 'dns' in group_names %}.dns{% endif %} dest=/etc/rsyncd.conf
+  copy: src=etc/rsyncd.conf{% if 'dns' in group_names %}.dns{% elif 'data' in group_names %}.data{% endif %} dest=/etc/rsyncd.conf
 
 - name: rsync password config
-  copy: src=etc/rsyncd.secrets dest=/etc/rsyncd.secrets mode=0600
+  copy: src=etc/rsyncd.secrets{% if 'data' in group_names %}.data{% endif %} dest=/etc/rsyncd.secrets mode=0600
   

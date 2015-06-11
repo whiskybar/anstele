@@ -1,4 +1,4 @@
-- hosts: nightbat.tele3.cz
+- hosts: ghostdog.tele3.cz
   vars:
     virtualenv: /home/hosting/steal
     user: hosting
@@ -8,8 +8,13 @@
 #    - common
 #    - users
 #    - cert
-#    - rsync
+    - rsync
 #    - nginx
 #    - php-fpm
 #    - phpmyadmin
-    - steal
+#    - steal
+#    - dns
+#    - mydns
+#    - dns-sign
+#    - fakturace
+

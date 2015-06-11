@@ -1,0 +1,11 @@
+- name: install SMS packages
+  apt: name={{ item }}
+  with_items:
+    - gsm-utils
+    - gammu
+
+- name: configure gammu
+  copy: src=etc/gammu-smsdrc dest=/etc/gammu-smsdrc
+  notify:
+    - reload gammu
+

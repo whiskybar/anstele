@@ -4,3 +4,7 @@
 - name: bind packages
   apt: name=bind9
 
+- name: disable bind daemon
+  service: name=bind9 state=stopped enabled=no
+
+

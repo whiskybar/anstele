@@ -1,0 +1,2 @@
+- name: reload gammu
+  service: name=gammu-smsd state=reloaded

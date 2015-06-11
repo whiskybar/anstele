@@ -1,0 +1,101 @@
+server {
+    listen 80;
+	listen [::]:80;
+	server_name www.tele3.cz tele3.cz fakturace.tele3.cz;
+	return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+	listen [::]:443 ssl;
+	server_name tele3.cz;
+	ssl_certificate /etc/ssl/certs/www.tele3.cz.chained.crt;
+	ssl_certificate_key /etc/ssl/private/www.tele3.cz.key;
+	return 301 https://www.tele3.cz$request_uri;
+}
+
+server {
+	listen 443 ssl;
+    listen [::]:443 ssl;
+	server_name www.tele3.cz;
+
+	client_max_body_size 8m;
+	ssl_certificate /etc/ssl/certs/www.tele3.cz.chained.crt;
+	ssl_certificate_key /etc/ssl/private/www.tele3.cz.key;
+
+	index index.html index.php;
+	root /var/www/hosting/tele3.cz;
+	try_files $uri $uri/ =404;
+
+    location ~ /phpmyadmin/.*\.php {
+        root /usr/share;
+		fastcgi_pass unix:/var/run/php-fpm.sock;
+		fastcgi_index index.php;
+		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+		include /etc/nginx/fastcgi_params;
+	}
+
+	location /phpmyadmin {
+        root /usr/share;
+	}
+
+    location ~ /mydnsconfig/.*\.php {
+        root /var/www;
+		fastcgi_pass unix:/var/run/php-fpm.sock;
+		fastcgi_index index.php;
+		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+		include /etc/nginx/fastcgi_params;
+	}
+
+	location /mydnsconfig {
+		root /var/www;
+	}
+
+	location = /sitemap.xml {
+		rewrite ^ /sitemap.php;
+	}
+
+	location = /rss.xml {
+		rewrite ^ /rss.php;
+	}
+
+    location ~ "/([a-z0-9-_]+)\.[html]{3,4}$" {
+		try_files $uri /index.php?page=$1&$query_string;
+    }
+
+    location ~ "/([a-zA-Z0-9-_]+)\.php$" {
+		try_files $uri /redir.php?id=$1&$query_string;
+		fastcgi_pass unix:/var/run/php-fpm.sock;
+		fastcgi_index index.php;
+		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+		include /etc/nginx/fastcgi_params;
+    }
+
+}
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+	server_name fakturace.tele3.cz;
+
+	client_max_body_size 8m;
+	ssl_certificate /etc/ssl/certs/fakturace.tele3.cz.crt;
+	ssl_certificate_key /etc/ssl/private/fakturace.tele3.cz.key;
+
+	index index.html index.php;
+	root /var/www/fakturace;
+
+    location ~ "/(reg|subreg|tt)/([a-z0-9-_]+)\.html$" {
+		try_files $uri /$1/index.php?page=$2&$query_string;
+    }
+
+    location ~ .*\.php$ {
+		fastcgi_pass unix:/var/run/php-fpm.sock;
+		fastcgi_index index.php;
+		fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+		include /etc/nginx/fastcgi_params;
+	}
+
+	location / {
+	}
+}

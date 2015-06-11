@@ -1,0 +1,33 @@
+[gammu]
+port = /dev/ttyUSB0
+#model = at115200
+connection = at115200
+synchronizetime = yes
+logfile = /var/log/gammu.log
+logformat = textall
+use_locking = yes
+#gammuloc =
+
+[smsd]
+#Service = MYSQL
+DeliveryReport = log
+Service = SQL
+Driver = native_mysql
+DebugLevel = 1
+LogFile = /var/log/gammu.log
+User = gammu
+Password = 6xFernet
+Host = localhost
+Database = gammu
+DeliveryReportDelay=1000
+SkipSMSCNumber=0
+
+
+
+# Paths where messages are stored
+inboxpath = /var/spool/gammu/inbox/
+outboxpath = /var/spool/gammu/outbox/
+sentsmspath = /var/spool/gammu/sent/
+errorsmspath = /var/spool/gammu/error/
+
+
