@@ -5,6 +5,9 @@
 - name: nginx packages
   apt: name=nginx
 
+- name: customize fastcgi params
+  template: src=etc/nginx/fastcgi_params dest=/etc/nginx/fastcgi_params
+
 - name: disable the default site
   file: path=/etc/nginx/sites-enabled/default state=absent
   notify:
