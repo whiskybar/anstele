@@ -3,6 +3,7 @@ server {
 	listen [::]:80 default_server;
     index index.html index.php;
 	root /var/www/default;
+	expires 30d;
 
     location ~ .*\.php$ {
 		fastcgi_pass unix:/var/run/php-fpm.sock;
@@ -39,6 +40,7 @@ server {
 	client_max_body_size 8m;
 	ssl_certificate /etc/ssl/certs/www.tele3.cz.chained.crt;
 	ssl_certificate_key /etc/ssl/private/www.tele3.cz.key;
+	expires 30d;
 
 	index index.html index.php;
 	root /var/www/hosting/tele3.cz;
@@ -101,6 +103,7 @@ server {
 
 	index index.html index.php;
 	root /var/www/fakturace;
+	expires 30d;
 
     location ~ "/(reg|subreg|tt)/([a-z0-9-_]+)\.html$" {
 		try_files $uri /$1/index.php?page=$2&$query_string;

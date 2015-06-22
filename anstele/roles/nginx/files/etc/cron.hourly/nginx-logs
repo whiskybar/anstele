@@ -1,0 +1,7 @@
+#!/bin/bash
+
+LOGDIR=/var/log/nginx
+OUTPUTDIR=/var/log/apache2/$(date +%Y/%m/%d)
+mkdir -p $OUTPUTDIR
+mv $LOGDIR/access.log $OUTPUTDIR/$(date +%H).log
+cat /var/run/nginx.pid | xargs kill -USR1

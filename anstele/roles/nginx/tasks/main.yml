@@ -5,6 +5,11 @@
 - name: nginx packages
   apt: name=nginx
 
+- name: customize main nginx config
+  copy: src=etc/nginx/nginx.conf dest=/etc/nginx/nginx.conf
+  notify:
+    - reload nginx
+
 - name: customize fastcgi params
   template: src=etc/nginx/fastcgi_params dest=/etc/nginx/fastcgi_params
 
@@ -26,3 +31,9 @@
   with_fileglob: ../templates/etc/nginx/sites-enabled/{{ inventory_hostname }}
   notify:
     - reload nginx
+
+- name: set the log rotation for TELE3 stats
+  copy: src=etc/cron.hourly/nginx-logs dest=/etc/cron.hourly/nginx-logs mode=755
+
+- name: modify the log rotation for other logs
+  copy: src=etc/logrotate.d/nginx dest=/etc/logrotate.d/nginx
