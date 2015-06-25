@@ -1,0 +1,193 @@
+#!/usr/bin/python
+
+import re
+import cPickle as pickle
+import os
+import os.path
+import sys
+import subprocess
+from glob import glob
+from shutil import rmtree
+from MySQLdb import connect
+
+LAST_RUN_FILE = '/etc/bind/last-run'
+ZONE_LIST = '/etc/bind/named.conf.hosting'
+
+def zone_filename(domain):
+    domain = domain.replace('/', '-')
+    return '/etc/bind/hosting/%s/%s.db' % (domain, domain)
+
+def db_init():
+    return connect(read_default_file='~/.my.cnf', db='mydns').cursor()
+
+def should_sign(domain):
+    return domain.endswith('cz') or domain.endswith('eu') or domain.endswith('com') or domain.endswith('net') or domain.endswith('org') or domain.endswith('biz')
+
+def read_mydns(cursor):
+    """Read all DNS data from the MyDNS database."""
+
+    result = {}
+    read_mydns_records(cursor, result)
+    read_mydns_soa(cursor, result)
+    return result
+
+def read_mydns_records(cursor, result):
+    cursor.execute('''
+        SELECT LEFT(origin, LENGTH(origin) - 1), type, name, aux, data
+        FROM rr JOIN soa ON rr.zone = soa.id
+    ''')
+    for domain, type_, name, aux, data in cursor:
+        if not data:
+            continue
+        if name.endswith(domain + '.'):
+            name = name[:-len(domain) - 2]
+        if not name:
+            name = '@'
+        if type_ in ('MX', 'SRV'):
+            data = '%d %s' % (aux, data)
+        elif type_ == 'TXT':
+            data = re.sub('''(['"() \\t\\\\])''', r'\\\1', data)
+            maxlen = 255
+            data = ' '.join('"%s"' % data[i:j] for i, j in zip(xrange(0, len(data), maxlen), xrange(maxlen, len(data) + maxlen, maxlen)))
+    
+        result.setdefault(domain, {'records': set()})['records'].add(
+            '%s %s %s\n' % (name, type_, data))
+    
+def read_mydns_soa(cursor, result):
+    keys = ['origin', 'ttl', 'ns', 'mbox', 'serial', 'refresh', 'retry', 'expire', 'minimum']
+    cursor.execute('SELECT %s FROM soa' % ','.join(keys))
+    for row in cursor:
+        row = dict(zip(keys, row))
+        result.setdefault(row['origin'][:-1], {})['soa'] = \
+    '''$ORIGIN %(origin)s
+$TTL %(ttl)s
+%(origin)s IN SOA %(ns)s %(mbox)s (
+%(serial)s
+%(refresh)s
+%(retry)s
+%(expire)s
+%(minimum)s
+)
+$INCLUDE /etc/bind/dkim.conf
+''' % row
+
+def read_last_run(filename):
+    """Load the data from the last run."""
+
+    try:
+        with open(filename) as f:
+            return pickle.load(f)
+    except:
+        return {}
+
+def create_domain(domain, data):
+    zone_file = zone_filename(domain)
+    zone_dir = os.path.dirname(zone_file)
+    try:
+        os.mkdir(zone_dir)
+    except OSError:
+        pass
+    with open(zone_file, 'w') as f:
+        f.write(data['soa'])
+        f.writelines(data.get('records', []))
+        if should_sign(domain):
+            f.write('$INCLUDE %s/dnskey.db\n' % zone_dir)
+    if should_sign(domain):
+        open('%s/dnskey.db' % zone_dir, 'a').close()
+        open(zone_file + '.signed', 'a').close()
+
+#        print domain
+
+        if domain != 'tele3.cz':        
+            source_key = glob('/etc/bind/Ktele3.cz*.key')[0]
+            filename = os.path.basename(source_key).replace('tele3.cz', domain)
+            destination_key = '%s/%s' % (zone_dir, filename)
+            with open(destination_key, 'w') as f:
+                f.write(open(source_key).read().replace('tele3.cz', domain))
+            with open(destination_key.replace('.key', '.private'), 'w') as f:
+                f.write(open(source_key.replace('.key', '.private')).read())
+
+        subprocess.call([
+            '/usr/local/bin/zkt-signer',
+            '-c',
+            '/etc/bind/dnssec.conf',
+            '-o',
+            domain,
+            '%s.db' % domain,
+            '-v',
+            '-v',
+            '-f',
+            ], cwd=zone_dir,
+#            stdout=open('/tmp/dnssql-sync.log', 'a'),
+#            stderr=subprocess.STDOUT,
+        )
+
+def remove_domain(domain):
+    domain_directory = os.path.dirname(zone_filename(domain))
+    domain_directory = os.path.realpath(domain_directory)
+    if domain_directory.startswith('/etc/bind/hosting/'):
+        try:
+            rmtree(domain_directory)
+        except OSError:
+            pass
+    else:
+        print >>file('/var/log/dnssql-sync.err', 'a'), 'domain "%s"' % domain
+
+update_domain = create_domain
+
+def update_zone_list(domains):
+    with open(ZONE_LIST, 'w') as f:
+        for domain in domains:
+            zone_file = zone_filename(domain)
+            if should_sign(domain):
+                zone_file += '.signed'
+            f.write('''
+zone "%s" {
+    type master;
+    file "%s";
+};
+''' % (domain, zone_file))
+
+def main():
+    cursor = db_init()
+    this_run = read_mydns(cursor)
+    last_run = read_last_run(LAST_RUN_FILE)
+
+    forced_domains = set(sys.argv[1:])
+
+    #update all domains unconditionally
+#    for domain in this_run:
+#        update_domain(domain, this_run[domain])
+#    return
+
+    if this_run == last_run and not forced_domains:
+        return
+
+    last_domains = set(last_run)
+    this_domains = set(this_run)
+
+    #domains to create
+    for domain in this_domains - last_domains:
+        print 'creating ' + domain
+        create_domain(domain, this_run[domain])
+
+    #domains to remove
+    for domain in last_domains - this_domains:
+        print 'removing ' + domain
+        remove_domain(domain)
+
+    #domains to update
+    for domain in this_domains & last_domains | forced_domains:
+        if this_run[domain] != last_run[domain] or domain in forced_domains:
+            print 'updating ' + domain
+            update_domain(domain, this_run[domain])
+
+    update_zone_list(this_domains | forced_domains)
+
+    pickle.dump(this_run, open(LAST_RUN_FILE, 'w'))
+#    os.system('/usr/sbin/rndc reload >/dev/null')
+
+
+if __name__ == "__main__":
+    main()
+

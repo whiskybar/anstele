@@ -1,0 +1,12 @@
+- name: install DNS signing
+  copy: src=usr/local/sbin/dnssql-sync dest=/usr/local/sbin/dnssql-sync mode=744
+
+- name: cron DNS signing
+  cron: name="sign modified DNS zones" minute="*/5" cron_file=dnssql-sync user=root job="/usr/local/sbin/dnssql-sync >/dev/null &2>1"
+
+- name: install DNS re-signing
+  copy: src=usr/local/sbin/dnssql-expired dest=/usr/local/sbin/dnssql-expired mode=744
+
+- name: cron DNS re-signing
+  cron: name="sign expired DNSSEC zones" minute="11,41" cron_file=dnssql-expired user=root job="/usr/local/sbin/dnssql-expired >/dev/null &2>/var/log/sign-errors.log"
+

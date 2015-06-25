@@ -1,0 +1,17 @@
+#!/bin/bash
+
+TLD="cz eu com net org biz"
+
+for t in $TLD; do
+
+  cd /etc/bind/hosting
+  for d in *.$t; do
+    cd $d
+    #echo $d
+    # date +"%c" >> /var/log/sign-$t.log
+    /usr/local/bin/zkt-signer -v -c /etc/bind/dnssec.conf -o $d $d.db 
+    # >> /var/log/sign-$t.log
+    cd ..
+  done
+
+done # TLD
